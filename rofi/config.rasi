@@ -1,0 +1,101 @@
+* {
+    font: "Monospace 13.125";
+    text-color:      #e6e3d5;
+    foreground:      #ffb4ab;
+}
+
+/* Configuration */
+configuration {
+    modi: "drun";
+    show-icons: false;
+    display-run:  "";
+    display-drun:  "";
+    disable-history: true;
+    kb-row-up:        "Up,Control+k";
+    kb-row-down:      "Down,Control+j";
+    kb-accept-entry:  "Return,Control+m";
+    kb-remove-to-eol: "";
+}
+
+/* Window appearance */
+window {
+    transparency:   "real";
+    width:          445px;
+    height:         560px;
+    border-radius:  7px;
+    background-color: #14140c;
+    border:         2px solid;
+    border-color:   #48473a;
+    padding:        6px;
+}
+
+/* Layout */
+mainbox {
+    spacing: 10px;
+    margin:  0;
+    padding: 8px;
+    children: ["listview", "inputbar", "message"];
+}
+
+/* Input bar */
+inputbar {
+    children: ["prompt", "entry"];
+    spacing:  10px;
+    padding:  12px 10px;
+    border-radius: 18px;
+    border: 2px solid;
+    border-color: #48473a;
+    background-color: #202018;
+}
+
+prompt {
+    text-color: #e6e3d5;
+}
+
+entry {
+    placeholder: "Type to search...";
+    placeholder-color: #c9c7b6;
+    text-color: #e6e3d5;
+}
+
+/* List view */
+listview {
+    columns:       1;
+    lines:         7;
+    spacing:       2px;
+    fixed-height:  true;
+    fixed-columns: false;
+    scrollbar:     false;
+    cycle:         false;
+    border:        0px solid;
+    layout:        "vertical";
+}
+
+/* Elements */
+element {
+    spacing: 10px;
+    margin:  0;
+    padding: 8px;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color:       #48473a;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:       #48473a;
+}
+
+element selected.normal,
+element selected.active {
+    background-color: transparent;
+    text-color:       #e6e3d5;
+}
+
+/* Message area */
+message {
+    border: 8px solid;
+    text-color: #ffb4ab;
+}

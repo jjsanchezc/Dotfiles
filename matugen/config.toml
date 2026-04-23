@@ -1,0 +1,38 @@
+[config]
+
+[templates.hyprland_colors]
+input_path = "~/.config/matugen/templates/hyprland-colors.conf.in"
+output_path = "~/.config/hypr/colors.conf"
+post_hook = "hyprctl reload"
+
+[templates.hyprlock]
+input_path = "~/.config/matugen/templates/hyprlock.conf.in"
+output_path = "~/.config/hypr/hyprlock.conf"
+
+[templates.waybar]
+input_path = "~/.config/matugen/templates/waybar-style.css.in"
+output_path = "~/.config/waybar/style.css"
+post_hook = "pkill -SIGUSR2 waybar"
+
+[templates.ags_colors]
+input_path = "~/.config/matugen/templates/ags-colors.scss.in"
+output_path = "~/.config/ags/_colors.scss"
+post_hook = "ags quit -i jjsanchezc-shell; ags run &"
+
+[templates.kitty_colors]
+input_path = "~/.config/matugen/templates/kitty-colors.conf.in"
+output_path = "~/.config/kitty/colors.conf"
+
+[templates.rofi]
+input_path = "~/.config/matugen/templates/rofi.rasi.in"
+output_path = "~/.config/rofi/config.rasi"
+
+[templates.tmux]
+input_path = "~/.config/matugen/templates/tmux-colors.conf.in"
+output_path = "~/.config/tmux/colors.conf"
+post_hook = "tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk4-colors.css.in"
+output_path = "~/.config/gtk-4.0/colors.css"
+post_hook = "gsettings set org.gnome.desktop.interface color-scheme prefer-dark"

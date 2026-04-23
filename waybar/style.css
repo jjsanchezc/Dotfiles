@@ -1,0 +1,183 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font";
+    font-weight: bold;
+    font-size: 16px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: #e6e3d5;
+}
+
+tooltip {
+    background: #14140c;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #202018;
+}
+
+#workspaces button {
+    padding: 5px;
+    color: #48473a;
+    margin-right: 5px;
+}
+
+#workspaces button.active {
+    color: #e6e3d5;
+}
+
+#workspaces button.focused {
+    color: #323200;
+    background: #cbcb76;
+    border-radius: 10px;
+}
+
+#workspaces button.urgent {
+    color: #690005;
+    background: #ffb4ab;
+    border-radius: 10px;
+}
+
+#workspaces button:hover {
+    background: #202018;
+    color: #e6e3d5;
+    border-radius: 10px;
+}
+
+#custom-power_profile,
+#custom-power,
+#clock,
+#battery,
+#pulseaudio,
+#network,
+#bluetooth,
+#workspaces,
+#tray,
+#backlight,
+#cpu,
+#memory {
+    background: #202018;
+    padding: 0px 10px;
+    margin: 3px 0px;
+    margin-top: 10px;
+    border: 1px solid #14140c;
+}
+
+/* Grupo 1: CPU + Memory + Power Profile */
+#cpu {
+    color: #cbcb76;
+    border-radius: 10px 0px 0px 10px;
+    margin-left: 10px;
+    border-right: 0px;
+}
+
+#memory {
+    color: #cbcb76;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+#custom-power_profile {
+    border-radius: 0px 10px 10px 0px;
+    margin-right: 5px;
+    border-left: 0px;
+}
+
+/* Grupo 2: Network + Bluetooth */
+#network {
+    color: #cbcb76;
+    border-radius: 10px 0px 0px 10px;
+    margin-left: 5px;
+    border-right: 0px;
+}
+
+#bluetooth {
+    color: #cbcb76;
+    border-radius: 0px 10px 10px 0px;
+    margin-right: 5px;
+    border-left: 0px;
+}
+
+/* Grupo 3: Audio + Micrófono */
+#pulseaudio {
+    color: #cbcb76;
+    border-radius: 10px 0px 0px 10px;
+    margin-left: 5px;
+    border-right: 0px;
+}
+
+#pulseaudio.microphone {
+    color: #cbcb76;
+    border-radius: 0px 10px 10px 0px;
+    margin-right: 5px;
+    border-left: 0px;
+}
+
+/* Grupo 4: Battery (sola) */
+#battery {
+    color: #cbcb76;
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#battery.warning {
+    color: #a4d0bd;
+}
+
+#battery.critical {
+    color: #ffb4ab;
+}
+
+/* Grupo 5: Backlight (sola) */
+#backlight {
+    color: #cbcb76;
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#tray {
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* Grupo 6: Power button */
+#custom-power {
+    color: #ffb4ab;
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+#workspaces {
+    background: #202018;
+    border-radius: 10px;
+    margin-left: 10px;
+    padding-right: 0px;
+    padding-left: 5px;
+}
+
+#custom-power_profile.quiet {
+    color: #cbcb76;
+}
+
+#custom-power_profile.balanced {
+    color: #e6e3d5;
+}
+
+#custom-power_profile.performance {
+    color: #ffb4ab;
+}
+
+#clock {
+    color: #cbcb76;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
