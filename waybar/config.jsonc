@@ -6,8 +6,8 @@
     "passthrough": false,
     "gtk-layer-shell": true,
     "height": 59,
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock"],
+    "modules-left": ["clock"],
+    "modules-center": ["hyprland/workspaces"],
     "modules-right": ["cpu", "memory", "network", "bluetooth", "pulseaudio", "pulseaudio#microphone", "battery", "backlight", "tray", "custom/power"],
     "reload_style_on_change":true,
 
@@ -15,9 +15,10 @@
         "disable-scroll": true,
         "all-outputs": true,
         "on-click": "activate",
+        "format":"{icon}",
         "format-icons":{
-          "active":"\uf192", //aca debo de poner el icono de ambos 
-          "default":"\uf111" // lo mismo aca
+          "active": "◉",
+          "default": "●"
         }
 
     },
