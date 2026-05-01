@@ -1,5 +1,5 @@
 * {
-    font: "Monospace 13.125";
+    font: "JetBrainsMono Nerd Font 13" ;
     text-color:      #e6e3d5;
     foreground:      #ffb4ab;
 }
