@@ -7,6 +7,7 @@
     min-height: 0;
 }
 
+
 window#waybar {
     background: transparent;
     color: #e6e3d5;
@@ -22,17 +23,17 @@ tooltip {
 
 #workspaces button {
     padding: 5px;
-    color: #48473a;
+    color:#48473a;
     margin-right: 5px;
 }
 
 #workspaces button.active {
-    color: #e6e3d5;
+    color: #bdae93;
 }
 
 #workspaces button.focused {
     color: #323200;
-    background: #cbcb76;
+    background: #bdae93;
     border-radius: 10px;
 }
 
@@ -49,7 +50,6 @@ tooltip {
 }
 
 #custom-power_profile,
-#custom-power,
 #clock,
 #battery,
 #pulseaudio,
@@ -65,18 +65,18 @@ tooltip {
     margin: 15px 0px;
     margin-top: 10px;
     border: 1px solid #14140c;
+    color: #bdae93;
 }
+
 
 /* Grupo 1: CPU + Memory + Power Profile */
 #cpu {
-    color: #cbcb76;
     border-radius: 10px 0px 0px 10px;
     margin-left: 0px;
     border-right: 0px;
 }
 
 #memory {
-    color: #cbcb76;
     border-radius: 0px 10px 10px 0px;
     border-left: 0px;
     border-right: 0px;
@@ -90,14 +90,12 @@ tooltip {
 
 /* Grupo 2: Network + Bluetooth */
 #network {
-    color: #cbcb76;
     border-radius: 10px 0px 0px 10px;
     margin-left: 5px;
     border-right: 0px;
 }
 
 #bluetooth {
-    color: #cbcb76;
     border-radius: 0px 10px 10px 0px;
     margin-right: 5px;
     border-left: 0px;
@@ -105,14 +103,12 @@ tooltip {
 
 /* Grupo 3: Audio + Micrófono */
 #pulseaudio {
-    color: #cbcb76;
     border-radius: 10px 0px 0px 10px;
     margin-left: 0px;
     border-right: 0px;
 }
 
 #pulseaudio.microphone {
-    color: #cbcb76;
     border-radius: 0px 10px 10px 0px;
     margin-right: 5px;
     border-left: 0px;
@@ -120,7 +116,6 @@ tooltip {
 
 /* Grupo 4: Battery (sola) */
 #battery {
-    color: #cbcb76;
     border-radius: 10px;
     margin-left: 0px;
     margin-right: 0px;
@@ -136,7 +131,6 @@ tooltip {
 
 /* Grupo 5: Backlight (sola) */
 #backlight {
-    color: #cbcb76;
     border-radius: 10px;
     margin-left: 5px;
     margin-right: 5px;
@@ -153,7 +147,8 @@ tooltip {
     color: #ffb4ab;
     border-radius: 10px;
     margin-left: 5px;
-    margin-right: 10px;
+    margin-right: 5px;
+    padding: 0px 7px;
 }
 
 #workspaces {
@@ -177,7 +172,6 @@ tooltip {
 }
 
 #clock {
-    color: #cbcb76;
     border-radius: 10px;
     margin-left: 10px;
     margin-right: 10px;
