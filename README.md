@@ -2,6 +2,7 @@
 
 Personal dotfiles for an Arch Linux system running the Hyprland Wayland compositor. Includes a dynamic theming system via matugen, a custom AGS shell, and configurations for a full desktop environment.
 
+
 ---
 
 ## Directory Overview
