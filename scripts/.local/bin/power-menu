@@ -6,12 +6,11 @@ options=(
     "Reboot"
     "Lock"
     "Suspend"
-    "Logout"
+   "Logout"
 )
 
 # Show Rofi with two columns, no input bar, and large font
-choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -p '' )"
-
+choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p '')"
 case "$choice" in
     "Shutdown")
         systemctl poweroff
@@ -20,14 +19,8 @@ case "$choice" in
         systemctl reboot
         ;;
     "Lock")
-        if command -v gtklock >/dev/null; then
-            gtklock
-        elif command -v hyprlock >/dev/null; then
+        if command -v hyprlock >/dev/null; then
             hyprlock
-        elif command -v i3lock >/dev/null; then
-            i3lock
-        elif command -v betterlockscreen >/dev/null; then
-            betterlockscreen -l
         else
             notify-send "No lock utility found."
         fi
