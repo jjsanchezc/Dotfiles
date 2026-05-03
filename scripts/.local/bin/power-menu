@@ -10,8 +10,7 @@ options=(
 )
 
 # Show Rofi with two columns, no input bar, and large font
-choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -p '' )"
-
+choice="$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -p '')"
 case "$choice" in
     "Shutdown")
         systemctl poweroff

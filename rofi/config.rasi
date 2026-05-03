@@ -15,6 +15,7 @@ configuration {
     kb-row-down:      "Down,Control+j";
     kb-accept-entry:  "Return,Control+m";
     kb-remove-to-eol: "";
+    case-sensitive: false;
 }
 
 /* Window appearance */
