@@ -127,6 +127,10 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
+    ensure_installed= {vim,lua,python,query,html},
+    sync_install = false,
+    highlight = {enable=true},
+    indent = {enable = true},
   },
 
   -- Activar gitsigns inmediatamente
