@@ -117,8 +117,9 @@
 	    "tooltip-format": "{device_alias}",
 	    "tooltip-format-connected": "󰂱 {device_enumerate}",
 	    "tooltip-format-enumerate-connected": "{device_alias}",
-	    "on-click": "ags request toggle-cc",
-	    "on-click-right": "bluetoothctl power toggle"
+	    //"on-click": "ags request toggle-cc",
+	    //"on-click-right": "bluetoothctl power toggle",
+      "on-click":"blueman-manager" 
     },
 
     "custom/power": {
