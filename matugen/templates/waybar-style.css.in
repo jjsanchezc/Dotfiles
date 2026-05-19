@@ -3,7 +3,7 @@
     border-radius: 0;
     font-family: "JetBrainsMono Nerd Font";
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
     min-height: 0;
 }
 
@@ -45,11 +45,10 @@ tooltip {
 #workspaces button:hover {
     background: {{colors.surface_container.default.hex}};
     color: {{colors.on_surface.default.hex}};
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 #custom-power_profile,
-#custom-power,
 #clock,
 #battery,
 #pulseaudio,
@@ -62,7 +61,7 @@ tooltip {
 #memory {
     background: {{colors.surface_container.default.hex}};
     padding: 0px 10px;
-    margin: 3px 0px;
+    margin: 15px 0px;
     margin-top: 10px;
     border: 1px solid {{colors.surface.default.hex}};
 }
@@ -71,12 +70,13 @@ tooltip {
 #cpu {
     color: {{colors.primary.default.hex}};
     border-radius: 10px 0px 0px 10px;
-    margin-left: 10px;
+    margin-left: 0px;
     border-right: 0px;
 }
 
 #memory {
     color: {{colors.primary.default.hex}};
+    border-radius: 0px 10px 10px 0px;
     border-left: 0px;
     border-right: 0px;
 }
@@ -106,7 +106,7 @@ tooltip {
 #pulseaudio {
     color: {{colors.primary.default.hex}};
     border-radius: 10px 0px 0px 10px;
-    margin-left: 5px;
+    margin-left: 0px;
     border-right: 0px;
 }
 
@@ -117,12 +117,12 @@ tooltip {
     border-left: 0px;
 }
 
-/* Grupo 4: Battery (sola) */
+/* Grupo 4: Battery */
 #battery {
     color: {{colors.primary.default.hex}};
     border-radius: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
 #battery.warning {
