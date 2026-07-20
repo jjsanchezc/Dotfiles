@@ -18,3 +18,5 @@ alias grep='grep --color=auto'
 fastfetch
 
 eval "$(starship init bash)"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
