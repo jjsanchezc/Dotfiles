@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # Wallpaper picker using rofi — supports subfolder navigation
 
+# Resolve sibling script by path, not by name: Hyprland's exec environment
+# (unlike an interactive shell) doesn't have ~/.local/bin on PATH, so a bare
+# `wallpaper-set` call silently fails to be found when run from a keybind.
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
 WALLPAPER_DIR="$HOME/.config/hypr/Wallpapers"
 current_dir="$WALLPAPER_DIR"
 
@@ -22,7 +27,7 @@ while true; do
     elif [[ -d "$target" ]]; then
         current_dir="$target"
     elif [[ -f "$target" ]]; then
-        wallpaper-set "$target"
+        "$SCRIPT_DIR/wallpaper-set" "$target"
         exit 0
     fi
 done

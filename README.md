@@ -163,6 +163,10 @@ A static fallback palette (`hypr/colors.conf`, `ags/_colors.scss`) is used befor
 
 > **Note:** `waybar/style.css` and `rofi/config.rasi` are matugen-generated outputs. Always edit the corresponding `.in` file in `matugen/templates/` instead of editing these directly — hand edits to the generated files get silently overwritten (and any un-ported tweaks revert) the next time `wallpaper-set` runs `matugen image`.
 
+### Fixed color themes
+
+Wallpapers placed inside `hypr/Wallpapers/everforest/`, `hypr/Wallpapers/gruvbox/`, or `hypr/Wallpapers/catppuccin/` skip Material You derivation entirely: `wallpaper-set` detects the folder and runs `matugen json matugen/themes/<name>.json` instead of `matugen image`, applying that theme's real, official palette (hand-mapped hex values, not a tint) to every template. Wallpapers anywhere else keep the fully automatic, image-derived behavior described above.
+
 ---
 
 ## Startup Applications

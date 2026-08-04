@@ -24,4 +24,13 @@ echo "$WALLPAPER" > "${XDG_CACHE_HOME:-$HOME/.cache}/current-wallpaper"
 HYPRPAPER_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprpaper.conf"
 printf 'preload = %s\nwallpaper = ,contain:%s\n' "$WALLPAPER" "$WALLPAPER" > "$HYPRPAPER_CONF"
 
-matugen image "$WALLPAPER"
+# Wallpapers inside a fixed-theme folder use that theme's real palette
+# instead of a Material You tint derived from the image. Anything else
+# stays fully automatic.
+THEMES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/matugen/themes"
+case "$WALLPAPER" in
+    */Wallpapers/everforest/*) matugen json "$THEMES_DIR/everforest.json" ;;
+    */Wallpapers/gruvbox/*)    matugen json "$THEMES_DIR/gruvbox.json" ;;
+    */Wallpapers/catppuccin/*) matugen json "$THEMES_DIR/catppuccin.json" ;;
+    *)                         matugen image "$WALLPAPER" ;;
+esac
