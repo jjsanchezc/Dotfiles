@@ -7,7 +7,7 @@ Personal dotfiles for an Arch Linux system running the Hyprland Wayland composit
 
 ## Directory Overview
 
-### `hyprland/`
+### `hypr/`
 Core Wayland compositor configuration.
 
 - **hyprland.conf** — Main config: keybindings (Super key), window rules, workspace assignments, startup apps, and NVIDIA env vars.
@@ -20,10 +20,10 @@ Core Wayland compositor configuration.
 - **Wallpapers/** — Stored wallpaper images.
 
 ### `ags/`
-[AGS](https://github.com/Aylur/ags) (Astal GTK Shell) — custom GTK4 desktop widgets.
+[AGS](https://github.com/Aylur/ags) (Astal GTK Shell) — custom GTK4 desktop widgets. `app.ts` only wires up `ControlCenter` and `Notifications`; **waybar is the active top bar**.
 
-- **Bar.tsx** — Status bar/panel.
-- **ControlCenter.tsx** — Slide-out panel: audio, network, bluetooth, battery, brightness, power profiles (asusctl), and media player (MPRIS).
+- **widget/Bar.tsx** — Status bar/panel. *Currently unused/legacy* — not imported by `app.ts`, so it never renders.
+- **ControlCenter.tsx** — Slide-out panel: audio, network, bluetooth, battery, brightness, power profiles (asusctl), and media player (MPRIS). Opened via waybar's network module (`ags request toggle-cc`).
 - **Notifications.tsx** — Notification popup display.
 - **style.scss / _colors.scss** — Styling. `_colors.scss` is overwritten by matugen.
 - **hypridle-profiles.json** — Idle timeout profiles (configurable from the control center).
@@ -159,13 +159,15 @@ Colors are generated dynamically from the active wallpaper using **matugen**. Ru
 2. Run matugen, which renders all templates and writes color files to the relevant config locations.
 3. Post-hooks reload Waybar, restart AGS, and apply GTK/Qt themes.
 
-A static fallback palette (`hyprland/colors.conf`, `ags/_colors.scss`) is used before any wallpaper is set.
+A static fallback palette (`hypr/colors.conf`, `ags/_colors.scss`) is used before any wallpaper is set.
+
+> **Note:** `waybar/style.css` and `rofi/config.rasi` are matugen-generated outputs. Always edit the corresponding `.in` file in `matugen/templates/` instead of editing these directly — hand edits to the generated files get silently overwritten (and any un-ported tweaks revert) the next time `wallpaper-set` runs `matugen image`.
 
 ---
 
 ## Startup Applications
 
-Launched via `exec-once` in `hyprland.conf`:
+Launched via `exec-once` in `hypr/hyprland.conf`:
 
 | App | Role |
 |-----|------|
