@@ -64,11 +64,10 @@ Lowest risk / simplest syntax first, so mistakes are cheap and you learn the new
 
 ## Post-migration checklist
 
-- [ ] Restart Hyprland for real (logout/login or however you normally do it — save your work first) so it actually picks up `hyprland.lua`. Nothing changes for your session before this.
-- [ ] Immediately after restart, confirm no errors got missed by `--verify-config` (it can't catch everything `hyprctl reload` on a live session could, e.g. runtime dispatcher behavior).
-- [ ] Re-test the things this session already fixed, since they live in the migrated files: `Super+Shift+T` wallpaper picker, focused-window border color following the theme, all exec-once startup apps still launching (waybar, hyprpaper, ags-watch, `[workspace 1 silent] kitty tmux`).
-- [ ] Specifically test the binds that were hand-reconstructed rather than 1:1 copied from a confirmed reference, since `--verify-config` only proves they *registered*, not that they *behave* right: `Super+Q` (close), `Super+V` (togglefloating — note it's bound twice, pre-existing quirk carried over as-is), `Super+Shift+H/L/K/J` (movewindow), `Super+F` (fullscreen), and all 10 ASUS keys (156/211/121/122/123/256/232/233/237/238).
+- [x] Restart Hyprland for real — **done 2026-08-04.** No more deprecation warning, `hyprctl configerrors` clean, `hyprctl getoption general:col.active_border` confirms `colors.lua` is being read live. Committed as `migration to .lua files`.
+- [x] Confirmed no errors got missed by `--verify-config` — clean restart, no runtime config errors reported.
+- [x] Re-tested the things this session already fixed — **confirmed working 2026-08-04**: `Super+Shift+T` wallpaper picker, all exec-once startup apps still launching (waybar, hyprpaper, ags-watch, `[workspace 1 silent] kitty tmux`). Border color following the theme was already confirmed live (see above).
+- [x] Tested the binds that were hand-reconstructed rather than 1:1 copied from a confirmed reference — **confirmed working 2026-08-04**: `Super+Q` (close), `Super+V` (togglefloating — still bound twice, pre-existing quirk carried over as-is), `Super+Shift+H/L/K/J` (movewindow), `Super+F` (fullscreen), and the ASUS keys (156/211/121/122/123/256/232/233/237/238).
 - [ ] Run `wallpaper-set` once for real (any mode — automatic or one of the 3 fixed themes) to confirm matugen's regenerated `colors.lua` still applies correctly via `hyprctl reload`.
-- [ ] Reboot once, confirm Hyprland starts clean from `hyprland.lua` with no fallback to a stale `hyprland.conf`.
 - [ ] Once trusted for a few days: delete (or rename to `.bak`) the old `hyprland.conf`, `monitors.conf`, `input.conf`, `look_and_feel.conf`, `windows_and_workspaces.conf`, `keybindings.conf` — they're currently still sitting alongside the `.lua` files, inert but present (git history keeps them recoverable regardless). `colors.conf` can go now — it's already stale/unused since matugen writes `colors.lua` instead.
-- [ ] Update `README.md`'s references to `hyprland.conf` (directory overview, "Startup Applications" section) to `hyprland.lua`.
+- [x] Update `README.md`'s references to `hyprland.conf` (directory overview, "Startup Applications" section) to `hyprland.lua`.
