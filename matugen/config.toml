@@ -1,8 +1,8 @@
 [config]
 
 [templates.hyprland_colors]
-input_path = "~/.config/matugen/templates/hyprland-colors.conf.in"
-output_path = "~/.config/hypr/colors.conf"
+input_path = "~/.config/matugen/templates/hyprland-colors.lua.in"
+output_path = "~/.config/hypr/colors.lua"
 post_hook = "hyprctl reload"
 
 [templates.hyprlock]
