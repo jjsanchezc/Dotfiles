@@ -4,27 +4,46 @@ AGS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ags"
 INSTANCE="jjsanchezc-shell"
 LOG="/tmp/ags-watch.log"
 
+# Re-apply the last wallpaper if hyprpaper started with none active (boot
+# race condition). Deliberately independent of AGS — must still run even
+# if AGS itself fails to start (e.g. missing dependencies).
+restore_wallpaper() {
+    local last_wp="${XDG_CACHE_HOME:-$HOME/.cache}/current-wallpaper"
+    [[ -f "$last_wp" ]] || return
+    local wp
+    wp="$(cat "$last_wp")"
+
+    # hyprpaper and this script both launch via exec-once at roughly the
+    # same time, so on a cold boot hyprpaper's IPC may not be up yet —
+    # wait for it to actually respond before querying/setting anything.
+    local tries=0
+    until hyprctl hyprpaper listactive >/dev/null 2>&1 || (( tries >= 10 )); do
+        sleep 0.5
+        (( tries++ ))
+    done
+
+    if ! hyprctl hyprpaper listactive 2>/dev/null | grep -q "/"; then
+        hyprctl hyprpaper preload "$wp" 2>/dev/null
+        hyprctl hyprpaper wallpaper ",$wp" 2>/dev/null
+        echo "[$(date)] Wallpaper re-applied (hyprpaper had none active): $wp" >> "$LOG"
+    else
+        echo "[$(date)] Wallpaper already active, skipping re-apply" >> "$LOG"
+    fi
+}
+
 start_ags() {
     for i in 1 2 3 4 5; do
         pkill -f "ags run" 2>/dev/null
         ags quit -i "$INSTANCE" 2>/dev/null
         sleep 1
-        ags run >> "$LOG" 2>&1 &
+        # ags run resolves the entry file (app.ts) relative to CWD, not
+        # always to $AGS_DIR — without this cd it fails with "no such
+        # file or directory: .../ags/app" when launched from elsewhere
+        # (e.g. $HOME, as happens via Hyprland's exec-once).
+        (cd "$AGS_DIR" && ags run >> "$LOG" 2>&1) &
         sleep 5
         if ags list 2>/dev/null | grep -q "$INSTANCE"; then
             echo "[$(date)] AGS started (attempt $i)" >> "$LOG"
-            # Re-aplicar wallpaper solo si hyprpaper no tiene uno activo (race condition al boot)
-            LAST_WP="${XDG_CACHE_HOME:-$HOME/.cache}/current-wallpaper"
-            if [[ -f "$LAST_WP" ]]; then
-                wp="$(cat "$LAST_WP")"
-                if ! hyprctl hyprpaper listactive 2>/dev/null | grep -q "/"; then
-                    hyprctl hyprpaper preload "$wp" 2>/dev/null
-                    hyprctl hyprpaper wallpaper ",$wp" 2>/dev/null
-                    echo "[$(date)] Wallpaper re-applied (hyprpaper had none active): $wp" >> "$LOG"
-                else
-                    echo "[$(date)] Wallpaper already active, skipping re-apply" >> "$LOG"
-                fi
-            fi
             return 0
         fi
         echo "[$(date)] AGS failed to start (attempt $i)" >> "$LOG"
@@ -33,6 +52,7 @@ start_ags() {
     return 1
 }
 
+restore_wallpaper
 start_ags
 
 while inotifywait -r -e modify,create,delete \

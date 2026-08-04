@@ -12,6 +12,8 @@ Some subdirectories have their own, more detailed README:
 
 [`TODO.md`](TODO.md) tracks what's actually missing/broken vs. what this README describes, plus recommended fixes and additions.
 
+[`lua_MIGRATION.md`](lua_MIGRATION.md) — checklist for migrating `hypr/*.conf` to Hyprland's new Lua config format before `.conf` support is removed in 0.57.
+
 ---
 
 ## Directory Overview
