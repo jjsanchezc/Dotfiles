@@ -32,5 +32,9 @@ case "$WALLPAPER" in
     */Wallpapers/everforest/*) matugen json "$THEMES_DIR/everforest.json" ;;
     */Wallpapers/gruvbox/*)    matugen json "$THEMES_DIR/gruvbox.json" ;;
     */Wallpapers/catppuccin/*) matugen json "$THEMES_DIR/catppuccin.json" ;;
-    *)                         matugen image "$WALLPAPER" ;;
+    # --source-color-index 0 picks the most dominant color automatically.
+    # Without it, an image with several similarly-dominant colors makes
+    # matugen prompt interactively for which one to use — that prompt
+    # needs a TTY, so it silently does nothing when run from a keybind.
+    *)                         matugen image "$WALLPAPER" --source-color-index 0 ;;
 esac
