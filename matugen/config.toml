@@ -36,3 +36,7 @@ post_hook = "tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true"
 input_path = "~/.config/matugen/templates/gtk4-colors.css.in"
 output_path = "~/.config/gtk-4.0/colors.css"
 post_hook = "gsettings set org.gnome.desktop.interface color-scheme prefer-dark"
+
+[templates.fastfetch]
+input_path = "~/.config/matugen/templates/fastfetch-config.jsonc.in"
+output_path = "~/.config/fastfetch/config.jsonc"
