@@ -445,6 +445,12 @@ tooltip {
     }
 }
 
+.notif-icon {
+    border-radius: 8px;
+    min-width: 40px;
+    min-height: 40px;
+}
+
 .notif-app {
     color: $accent;
     font-size: 12px;

@@ -7,6 +7,22 @@ const notifd = AstalNotifd.get_default()
 const MAX_POPUPS = 3
 const DEFAULT_TIMEOUT = 4000
 
+// Prefer the notification's own attached image (e.g. a chat avatar) over
+// the sending app's icon. `app_icon` is usually a themed icon *name*
+// ("firefox"), but the spec also allows it to be a file path/URI, so check
+// for that too instead of assuming it's always a name.
+function getNotificationIcon(notification: AstalNotifd.Notification): { file?: string; iconName?: string } | null {
+    const image = notification.get_image()
+    if (image) return { file: image.replace(/^file:\/\//, "") }
+
+    const appIcon = notification.get_app_icon()
+    if (!appIcon) return null
+
+    return appIcon.startsWith("/") || appIcon.startsWith("file://")
+        ? { file: appIcon.replace(/^file:\/\//, "") }
+        : { iconName: appIcon }
+}
+
 function NotificationPopup(notification: AstalNotifd.Notification, onDone: () => void) {
     const urgency = notification.get_urgency()
     const isCritical = urgency === AstalNotifd.Urgency.CRITICAL
@@ -48,6 +64,7 @@ function NotificationPopup(notification: AstalNotifd.Notification, onDone: () =>
 
     const body = notification.get_body()
     const cssClass = isCritical ? "notification critical" : "notification"
+    const icon = getNotificationIcon(notification)
 
     const content = (
         <button cssClasses={[cssClass]}
@@ -56,18 +73,26 @@ function NotificationPopup(notification: AstalNotifd.Notification, onDone: () =>
                 notifd.disconnect(resolvedId)
                 destroy()
             }}>
-            <box orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-                <label cssClasses={["notif-app"]}
-                    label={notification.get_app_name() || "Notification"}
-                    xalign={0} maxWidthChars={40} ellipsize={3} />
-                <label cssClasses={["notif-summary"]}
-                    label={notification.get_summary()}
-                    xalign={0} maxWidthChars={40} ellipsize={3} />
-                {body ? (
-                    <label cssClasses={["notif-body"]}
-                        label={body}
-                        xalign={0} wrap maxWidthChars={40} />
+            <box spacing={12}>
+                {icon ? (
+                    <image cssClasses={["notif-icon"]}
+                        file={icon.file}
+                        iconName={icon.iconName}
+                        pixelSize={40} />
                 ) : <box />}
+                <box orientation={Gtk.Orientation.VERTICAL} spacing={4} hexpand>
+                    <label cssClasses={["notif-app"]}
+                        label={notification.get_app_name() || "Notification"}
+                        xalign={0} maxWidthChars={40} ellipsize={3} />
+                    <label cssClasses={["notif-summary"]}
+                        label={notification.get_summary()}
+                        xalign={0} maxWidthChars={40} ellipsize={3} />
+                    {body ? (
+                        <label cssClasses={["notif-body"]}
+                            label={body}
+                            xalign={0} wrap maxWidthChars={40} />
+                    ) : <box />}
+                </box>
             </box>
         </button>
     )
