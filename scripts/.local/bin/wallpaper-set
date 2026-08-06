@@ -40,3 +40,8 @@ case "$WALLPAPER" in
     # needs a TTY, so it silently does nothing when run from a keybind.
     *)                         matugen image "$WALLPAPER" --source-color-index 0 ;;
 esac
+
+# Note: hyprlock's background image is intentionally NOT tied to $WALLPAPER —
+# it stays pinned to a fixed image (see matugen/templates/hyprlock.conf.in)
+# regardless of what the desktop wallpaper is. Only its colors (accent/text/
+# input-field) follow the current theme, same as everything else.

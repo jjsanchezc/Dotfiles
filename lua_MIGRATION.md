@@ -2,6 +2,8 @@
 
 Hyprland 0.55+ replaced the old `.conf` config language (hyprlang) with a real Lua-based config. Hyprland 0.56.1 (what you're on) still accepts `.conf` but warns; **0.57 removes support entirely** (per the warning you saw and the official announcement: *"the old hyprlang syntax will continue to be supported for 1-2 releases starting from 0.55"*).
 
+**Gotcha found after the fact (2026-08-06):** `hyprctl dispatch exec <cmd>` (the old CLI syntax, useful for manually testing/launching something without editing a config) no longer works once you're on `hyprland.lua` — it tries to parse the CLI argument as Lua and fails with `unexpected symbol near '.'`. Haven't worked out the correct new ad-hoc syntax yet; for now, just background the command directly (`nohup cmd & disown`) instead of going through `hyprctl dispatch`.
+
 ## Scope — what actually needs to change
 
 Only **Hyprland's own config** is affected. Confirmed from the official announcement: *"Other hypr\* tools will for now continue using hyprlang as their config language provider."*

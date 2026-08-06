@@ -13,7 +13,7 @@ general {
 # BACKGROUND
 background {
     monitor =
-    path = ~/.config/hypr/Wallpapers/pain.jpg
+    path = ~/Dotfiles/hypr/Wallpapers/dark/allmight-dark.jpg
     blur_passes = 2
 }
 
@@ -24,8 +24,8 @@ label {
     color = $accent
     font_size = 52
     font_family = $font
-    position = -27, 0
-    halign = right
+    position = 27, 0
+    halign = left
     valign = top
 }
 
@@ -36,8 +36,8 @@ label {
     color = $text
     font_size = 20
     font_family = $font
-    position = -30, -90
-    halign = right
+    position = 30, -90
+    halign = left
     valign = top
 }
 

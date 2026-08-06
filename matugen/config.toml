@@ -17,7 +17,10 @@ post_hook = "pkill -SIGUSR2 waybar"
 [templates.ags_colors]
 input_path = "~/.config/matugen/templates/ags-colors.scss.in"
 output_path = "~/.config/ags/_colors.scss"
-post_hook = "ags quit -i jjsanchezc-shell; ags run &"
+# No post_hook: ags-watch (scripts/.local/bin/ags-watch) already watches
+# this exact file via inotifywait and restarts AGS itself. A post_hook here
+# doing its own "ags quit; ags run &" was redundant and, unlike ags-watch,
+# never `cd`ed into $AGS_DIR first, so it silently failed on every run.
 
 [templates.kitty_colors]
 input_path = "~/.config/matugen/templates/kitty-colors.conf.in"
