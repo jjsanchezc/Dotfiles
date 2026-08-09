@@ -34,7 +34,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("waybar")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/ags-watch")
-    -- hl.exec_cmd("hypridle") -- see TODO.md: no real hypridle.conf exists yet
+    hl.exec_cmd("hypridle")
     hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/power-saver")
 
     -- workspaces startup apps

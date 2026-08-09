@@ -6,7 +6,7 @@ Tracks drift between `README.md` (and subdirectory READMEs) and what's actually 
 
 Startup Applications table in `README.md` vs. `hypr/hyprland.lua`'s `hl.on("hyprland.start", ...)` block:
 
-- [ ] `hypridle` — commented out, and there's no `hypridle.conf` anywhere in the repo (not even a broken stub — the old copy in the pre-rename backup didn't survive). Needs a real `hypr/hypridle.conf` with dim/lock/suspend `listener {}` blocks before the exec line does anything.
+- [x] ~~`hypridle`~~ **RESOLVED 2026-08-09.** Wrote a real `hypr/hypridle.conf` (5 listeners: keyboard backlight off 2.5min, screen dim 5min, lock 6min, DPMS off 6.5min, suspend 20min — timeouts tuned by hand after an initial draft) and uncommented the exec line in `hyprland.lua`. Two things adapted from the Hyprland wiki example rather than copied blind: the keyboard backlight device is `asus::kbd_backlight` on this hardware, not the generic `rgb:kbd_backlight`; and `loginctl lock-session` (used for both `before_sleep_cmd` and the lock listener) only works because hypridle itself listens for that logind signal and runs `general.lock_cmd` in response — it was a no-op before since hypridle was never running. Validated with a dry run (`hypridle -c ... -v`, all 5 rules registered, no parse errors) before touching the exec line, then started live (`pidof hypridle` confirms one instance, dbus sleep-inhibitor registered) — no need to wait for next login.
 - [x] ~~`power-saver`~~ **RESOLVED 2026-08-06.** In the autostart block, confirmed running live.
 - [x] ~~`ags-watch`~~ **RESOLVED.** In the autostart block, AGS confirmed running (`ags list`). Needed a missing `~/.config/ags` symlink, a missing `cd $AGS_DIR`, missing `sass`/`inotify-tools`, and 6 missing `libastal-*-git` AUR packages.
 - [ ] `swayosd-server` — `swayosd` isn't installed. Volume/brightness OSD popups don't work.
@@ -42,11 +42,12 @@ Pick one per item: wire it up for real, or trim the README table to match realit
 
 ## 3. Recommended fixes (priority order)
 
-1. Write a real `hypr/hypridle.conf` with dim/lock/suspend listeners.
-2. Install `swayosd` for real, or drop it from the README.
-3. Write or remove `hypr-monitor-manager`.
-4. Decide `ControlCenter.tsx`'s trigger.
-5. Install `wl-clipboard` — cheap fix, unblocks both capture scripts.
+**hypridle (was #1) resolved 2026-08-09 — see §1.** Remaining, in order:
+
+1. Install `swayosd` for real, or drop it from the README.
+2. Write or remove `hypr-monitor-manager`.
+3. Decide `ControlCenter.tsx`'s trigger.
+4. Install `wl-clipboard` — cheap fix, unblocks both capture scripts.
 
 ## 4. Recommended additions
 
