@@ -5,9 +5,10 @@
   "exclusive": true,
   "passthrough": false,
   "gtk-layer-shell": true,
-  "height": 59,
+  "height": 42,
   "modules-left": [
-    "clock"
+    "clock",
+    "tray"
   ],
   "modules-center": [
     "hyprland/workspaces"
@@ -20,8 +21,7 @@
     "pulseaudio",
     "pulseaudio#microphone",
     "battery",
-    "backlight",
-    "tray"
+    "backlight"
   ],
   "reload_style_on_change": true,
   "hyprland/workspaces": {
