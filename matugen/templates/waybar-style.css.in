@@ -48,7 +48,6 @@ tooltip {
     border-radius: 5px;
 }
 
-#custom-power_profile,
 #clock,
 #battery,
 #pulseaudio,
@@ -79,12 +78,6 @@ tooltip {
     border-radius: 0px 10px 10px 0px;
     border-left: 0px;
     border-right: 0px;
-}
-
-#custom-power_profile {
-    border-radius: 0px 10px 10px 0px;
-    margin-right: 5px;
-    border-left: 0px;
 }
 
 /* Grupo 2: Network + Bluetooth */
@@ -147,33 +140,12 @@ tooltip {
     margin-right: 5px;
 }
 
-/* Grupo 6: Power button */
-#custom-power {
-    color: {{colors.error.default.hex}};
-    border-radius: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 0px 7px;
-}
-
 #workspaces {
     background: {{colors.surface_container.default.hex}};
     border-radius: 10px;
     margin-left: 10px;
     padding-right: 0px;
     padding-left: 5px;
-}
-
-#custom-power_profile.quiet {
-    color: {{colors.primary.default.hex}};
-}
-
-#custom-power_profile.balanced {
-    color: {{colors.on_surface.default.hex}};
-}
-
-#custom-power_profile.performance {
-    color: {{colors.error.default.hex}};
 }
 
 #clock {
