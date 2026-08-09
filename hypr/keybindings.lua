@@ -42,7 +42,7 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "x", hl.dsp.exec_cmd(os.getenv("
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "t", hl.dsp.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/wallpaper-picker"))
 
 -- Control Center (AGS) — waybar's network/bluetooth icons keep opening iwgtk/blueman-manager directly (see TODO.md), so this is ControlCenter's only trigger.
-hl.bind(mainMod .. " + " .. "c", hl.dsp.exec_cmd("ags request toggle-cc"))
+hl.bind(mainMod .. " + " .. "c", hl.dsp.exec_cmd("ags request -i jjsanchezc-shell toggle-cc"))
 
 -- Move focus with mainMod + arrow keys
 
