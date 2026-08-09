@@ -69,7 +69,7 @@ const [powerExpanded, setPowerExpanded] = createState(false)
 const [powerConfirm, setPowerConfirm] = createState("")
 
 // === Idle Timeouts ===
-const HYPRIDLE_CONF  = "/home/jjsanchezc/dotfiles-hypr/hyprland/hypridle.conf"
+const HYPRIDLE_CONF  = "/home/jjsanchezc/Dotfiles/hypr/hypridle.conf"
 const PROFILES_FILE  = "/home/jjsanchezc/.config/ags/hypridle-profiles.json"
 
 type IdleProfile = { lock: number; screenOff: number; suspend: number }

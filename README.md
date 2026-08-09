@@ -43,7 +43,7 @@ Graveyard for the pre-Lua hyprlang config (renamed from `hyprland_backup/` on 20
 [AGS](https://github.com/Aylur/ags) (Astal GTK Shell) — custom GTK4 desktop widgets. `app.ts` only wires up `ControlCenter` and `Notifications`; **waybar is the active top bar**.
 
 - **widget/Bar.tsx** — Status bar/panel. *Currently unused/legacy* — not imported by `app.ts`, so it never renders.
-- **ControlCenter.tsx** — Slide-out panel: audio, network, bluetooth, battery, brightness, power profiles (asusctl), and media player (MPRIS). Meant to open via waybar's network module (`ags request toggle-cc`), but that `on-click` is currently commented out in favor of `iwgtk` — no live UI trigger reaches it right now (see [`TODO.md`](TODO.md)).
+- **ControlCenter.tsx** — Slide-out panel: audio, network, bluetooth, battery, brightness, power profiles (asusctl), idle-timeout profiles (battery vs. charging), and media player (MPRIS). Opened with `Super + C` (`ags request toggle-cc`) — waybar's network/bluetooth icons stay on `iwgtk`/`blueman-manager` instead. See [`TODO.md`](TODO.md) for a real `app.ts` bug this trigger flushed out (the request handler never matched anything, not even before today).
 - **Notifications.tsx** — Notification popup display.
 - **style.scss / _colors.scss** — Styling. `_colors.scss` is overwritten by matugen.
 - **hypridle-profiles.json** — Idle timeout profiles (configurable from the control center).
@@ -212,7 +212,6 @@ Launched via the `hl.on("hyprland.start", ...)` block in `hypr/hyprland.lua`:
 | App | Role |
 |-----|------|
 | `power-saver` | Battery-aware brightness and refresh rate management |
-| `hypr-monitor-manager` | Auto display setup |
 | `ags-watch` | AGS widget system with hot-reload |
 | `hyprpaper` | Wallpaper daemon |
 | `hypridle` | Idle manager (dim → lock → suspend) |

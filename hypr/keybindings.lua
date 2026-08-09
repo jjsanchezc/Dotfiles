@@ -41,6 +41,9 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "x", hl.dsp.exec_cmd(os.getenv("
 
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "t", hl.dsp.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/wallpaper-picker"))
 
+-- Control Center (AGS) — waybar's network/bluetooth icons keep opening iwgtk/blueman-manager directly (see TODO.md), so this is ControlCenter's only trigger.
+hl.bind(mainMod .. " + " .. "c", hl.dsp.exec_cmd("ags request toggle-cc"))
+
 -- Move focus with mainMod + arrow keys
 
 hl.bind(mainMod .. " + " .. "h", hl.dsp.focus({ direction = "left" }))
@@ -207,7 +210,7 @@ hl.bind("code:238", hl.dsp.exec_cmd("brightnessctl -d asus::kbd_backlight set 33
 
 
 
-hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("cliphist list| rofi -dmenu -p \"\"| cliphist decode| wl-copy"))
+hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "V", hl.dsp.exec_cmd("cliphist list| rofi -dmenu -p \"\"| cliphist decode| wl-copy"))
 
 -- Autostart
 hl.on("hyprland.start", function()
