@@ -14,7 +14,7 @@ general {
 background {
     monitor =
     path = ~/Dotfiles/hypr/Wallpapers/dark/allmight-dark.jpg
-    blur_passes = 2
+    blur_passes = 0
 }
 
 # TIME
@@ -24,20 +24,20 @@ label {
     color = $accent
     font_size = 52
     font_family = $font
-    position = 27, 0
-    halign = left
+    position = 0, -80
+    halign = center
     valign = top
 }
 
 # DATE
 label {
     monitor =
-    text = cmd[update:43200000] date +"%A, %d %B %Y"
+    text = cmd[update:3600000] date +"%A, %d %B %Y"
     color = $text
     font_size = 20
     font_family = $font
-    position = 30, -90
-    halign = left
+    position = 0, -150
+    halign = center
     valign = top
 }
 
