@@ -95,11 +95,6 @@ Old kitty config, kept for reference. Not documented further, not loaded by anyt
 - **style.css** — Custom styling.
 - **icons/** — Button icons.
 
-### `swayosd/`
-[SwayOSD](https://github.com/ErikReider/SwayOSD) — on-screen display for volume/brightness changes. **Dormant**: `swayosd` isn't installed, so volume/brightness OSD popups don't work at all right now.
-
-- **style.css** — Minimal OSD styling.
-
 ### `fastfetch/`
 [Fastfetch](https://github.com/fastfetch-cli/fastfetch) — system info fetch tool.
 
@@ -216,7 +211,6 @@ Launched via the `hl.on("hyprland.start", ...)` block in `hypr/hyprland.lua`:
 
 | App | Role |
 |-----|------|
-| `swayosd-server` | OSD daemon for volume/brightness popups |
 | `power-saver` | Battery-aware brightness and refresh rate management |
 | `hypr-monitor-manager` | Auto display setup |
 | `ags-watch` | AGS widget system with hot-reload |
@@ -251,4 +245,4 @@ Installed and actually active:
 
 Referenced in the repo but **not installed** on this system right now (dormant configs — see the relevant Directory Overview entries above and [`TODO.md`](TODO.md)):
 
-- Foot (secondary terminal), lf (TUI file manager), Mako (superseded by AGS), Wlogout (superseded by `power-menu`), SwayOSD, wl-clipboard, fzf, zoxide, eza, bat, cliphist, lazygit
+- Foot (secondary terminal), lf (TUI file manager), Mako (superseded by AGS), Wlogout (superseded by `power-menu`), wl-clipboard, fzf, zoxide, eza, bat, cliphist, lazygit
