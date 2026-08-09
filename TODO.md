@@ -1,48 +1,48 @@
 # TODO
 
-Audited by comparing the main `README.md` against what's actually running on the system (checked `hyprland.conf`'s real `exec-once` lines, installed packages, and systemd unit status). Last audited: 2026-08-04. **Re-audited 2026-08-04 (later same day)** after the Lua migration ([`lua_MIGRATION.md`](lua_MIGRATION.md)) and a separate AGS-fixing session — see inline notes below for what changed. **Re-audited 2026-08-09** after the `waybar changes`/`more ricing`/`changes` commits (2026-08-06/09) — README updated to match, see new entries below.
+Tracks drift between `README.md` (and subdirectory READMEs) and what's actually on the system. Last audited: 2026-08-09.
 
 ## 1. README says it's active, but it isn't
 
-The "Startup Applications" table in `README.md` lists these as launched at startup — most still aren't (verified against `hypr/hyprland.lua`'s `hl.on("hyprland.start", ...)` block):
+Startup Applications table in `README.md` vs. `hypr/hyprland.lua`'s `hl.on("hyprland.start", ...)` block:
 
-- [ ] `hypridle` — still commented out, and turns out it's not a one-line fix: the only `hypridle.conf` anywhere in the repo is a stale copy in `hyprland_backup/` with no `listener {}` blocks at all (just `lock_cmd`/`before_sleep_cmd`/`after_sleep_cmd` hooks) — so even enabling the exec line would start a daemon that does nothing. Needs a real `hypr/hypridle.conf` written with actual dim/lock/suspend timeout listeners before the exec line is worth adding.
-- [x] ~~`power-saver`~~ **RESOLVED 2026-08-06.** Added to `hyprland.lua`'s autostart block and confirmed running live — genuinely self-contained (no config file, just `upower`/`brightnessctl`/`hyprctl`, both installed).
-- [x] ~~`ags-watch`~~ **RESOLVED.** Now actually in `hyprland.lua`'s autostart block, and AGS itself is confirmed running (`ags list` → `jjsanchezc-shell`). Took fixing a chain of issues in a later session: the `~/.config/ags` symlink didn't exist, `ags-watch` wasn't `cd`-ing into `$AGS_DIR` before `ags run` (AGS resolves `app.ts` relative to CWD), `sass`/`inotify-tools` weren't installed, and 6 `libastal-*-git` AUR packages were missing entirely. See §2 for a related bug this surfaced.
-- [ ] `swayosd-server` — the `swayosd` package isn't even installed (`pacman -Qi swayosd` → not found). Volume/brightness OSD popups can't work at all right now.
-- [ ] `hypr-monitor-manager` — doesn't exist anywhere in the repo or `$PATH`. Either this was never written, or it's a tool that got removed and the README reference is stale.
-- [ ] `kitty` (nvim, workspace 3) — no second `kitty` exec line exists; only the tmux one on workspace 1 is real.
-- [ ] `battery-alert.service` / `.timer` — the unit files exist in `systemd/.config/systemd/user/`, but `~/.config/systemd/user/` is a real (non-symlinked) empty directory — they were never copied in or enabled (`systemctl --user is-enabled` → not-found for both).
+- [ ] `hypridle` — commented out, and there's no `hypridle.conf` anywhere in the repo (not even a broken stub — the old copy in the pre-rename backup didn't survive). Needs a real `hypr/hypridle.conf` with dim/lock/suspend `listener {}` blocks before the exec line does anything.
+- [x] ~~`power-saver`~~ **RESOLVED 2026-08-06.** In the autostart block, confirmed running live.
+- [x] ~~`ags-watch`~~ **RESOLVED.** In the autostart block, AGS confirmed running (`ags list`). Needed a missing `~/.config/ags` symlink, a missing `cd $AGS_DIR`, missing `sass`/`inotify-tools`, and 6 missing `libastal-*-git` AUR packages.
+- [ ] `swayosd-server` — `swayosd` isn't installed. Volume/brightness OSD popups don't work.
+- [ ] `hypr-monitor-manager` — doesn't exist in the repo or `$PATH`.
+- [ ] `kitty` (nvim, workspace 3) — no second `kitty` exec line exists.
+- [ ] `battery-alert.service`/`.timer` — unit files exist in `systemd/`, but were never copied to `~/.config/systemd/user/` or enabled.
 
-Pick one per item: actually wire it up, or edit the README table down to what's real (like we did once already this session, before it got reverted).
+Pick one per item: wire it up for real, or trim the README table to match reality.
 
-## 2. Actually missing / broken (found this session, not necessarily in the README)
+## 2. Actually missing / broken
 
-- [x] ~~**`hyprlock` background is hardcoded**~~ **RESOLVED 2026-08-06.** `matugen/templates/hyprlock.conf.in` no longer has a literal path — it now has a `__WALLPAPER_SET_PATH__` marker that `wallpaper-set` `sed`-replaces with the real `$WALLPAPER` path on every run, after matugen finishes. Works for automatic *and* all 3 fixed-theme branches uniformly (sidesteps `{{image}}` not existing in `matugen json` mode at all). Verified end-to-end against a Catppuccin wallpaper: `hyprlock.conf`'s `path =` line matched the real active wallpaper, `colors.lua` showed Catppuccin Mocha's real `cba6f7`/`6c7086` (not a derived tint), zero config errors.
-- [x] ~~**AGS post-hook CWD bug**~~ **RESOLVED 2026-08-06.** Deleted the redundant post_hook entirely from `matugen/config.toml` — `ags-watch` already restarts AGS correctly on every `_colors.scss` change, so this was pure dead weight that happened to also be broken.
-- [x] ~~**Orphaned `hypr/wallpapers/`**~~ **RESOLVED 2026-08-06.** Deleted.
-- [ ] **Theming doesn't cover everything**: `wlogout/`, `swayosd/` have no matugen template — they stay static/hardcoded colors while everything else re-themes. Not broken, just inconsistent if you care about all apps matching. (`mako/` and `foot/` dropped from this list — see below, both are dead weight, not just untethemed.)
-- [ ] **`starship.toml` is unused** — exists and is symlinked, but `.zshrc` never initializes it (Powerlevel10k is the real prompt). Explicitly deferred earlier this session ("solo fastfetch por ahora").
-- [x] ~~**`foot/` and `mako/` — dead, unused config folders**~~ **INVESTIGATED 2026-08-06, decision made.** Neither package is installed, neither is symlinked into `~/.config/`, neither is referenced anywhere in the repo. `foot/foot.ini` stays as-is for now (kept in case you want foot as an alt terminal later, per your call). For notifications: **AGS already implements a full, working, matugen-themed notification system** (`ags/widget/Notifications.tsx` — popups with urgency/auto-dismiss, now with icons too; `ags/widget/ControlCenter.tsx` — DND toggle), confirmed genuinely active (not dead code like `Bar.tsx`, both are imported and called in `app.ts`) and confirmed themed (uses `$accent`/`$bg-alt`/`$urgent` etc. from the same matugen-generated `_colors.scss` as the rest of AGS). The *actual* notification daemon that had been running was `dunst` (D-Bus-activated `dunst.service`, `static` systemd unit — never in this repo, installed+configured outside it, running on `/etc/dunst/dunstrc` system defaults) — not mako. Decision: **masked `dunst.service`** (`systemctl --user mask dunst.service`, persists across reboots) so AGS's own `Notifications.tsx` reliably owns `org.freedesktop.Notifications`; `mako` was installed but never wired into autostart, so it doesn't compete. `mako/` folder left in the repo but unused — consider deleting later if you're sure you'll never go back to it.
-- [x] ~~**Notification icons added to `ags/widget/Notifications.tsx`**~~ **RESOLVED 2026-08-06.** Prefers the notification's own attached image (`get_image()`) over the sending app's icon (`get_app_icon()`), handles both icon-theme names and raw file paths. Confirmed visually on-screen with a real `notify-send -i firefox` test.
-- [ ] **Pre-existing bug surfaced while testing the icon feature**: every notification `NotificationPopup` handles logs `Error: out of tracking context: will not be able to cleanup` in `ags-watch.log`. Confirmed via a control test (a notification with zero icon/body still triggers it) that this is **not** caused by the icon change — it's a pre-existing issue in how `NotificationPopup` builds its widget tree from inside the `notifd.connect("notified", ...)` callback rather than a proper Astal component context. Never noticed before because AGS never received a *real* notification event until dunst was masked — this session is the first time it's actually been exercised. Doesn't appear fatal (AGS keeps running, widget still renders), but cleanup may be leaking on repeated notifications; worth a proper look if AGS's memory usage grows over a long uptime.
-- [ ] **`ControlCenter.tsx` currently has no live UI trigger** — found 2026-08-09: `waybar/config.jsonc`'s network module `on-click` (`ags request toggle-cc`) is commented out and replaced with `iwgtk`; nothing else in the repo calls `toggle-cc`. The widget still exists and is imported/wired in `app.ts`, it's just unreachable from the UI right now. Needs a decision: restore the waybar click, bind a dedicated keybind in `hypr/keybindings.lua`, or intentionally retire ControlCenter.
-- [x] ~~**README waybar/ControlCenter sections stale**~~ **RESOLVED 2026-08-09.** `waybar/config.jsonc`'s module layout changed (clock+tray now left, workspaces center, added `bluetooth`/`pulseaudio#microphone`/`backlight` to the right group) and README still described the old left/center/right split. Also corrected the ControlCenter description to reflect the `toggle-cc` disconnect above instead of claiming it opens live.
-- [x] ~~**README missing `bash/`, `starship/`, `hyprconf2lua`**~~ **RESOLVED 2026-08-09.** `bash/` and `starship/` had no Directory Overview entries at all; `scripts/.local/bin/hyprconf2lua` (the migration tool from `lua_MIGRATION.md`) was missing from the scripts table. All three added.
-- [ ] **Stray binary committed to the repo**: `scripts/.local/bin/claude` is a symlink to `~/.local/share/claude/versions/2.1.226` — the Claude Code CLI binary itself, not a real dotfile/script. Left out of the README table on purpose. Looks accidental; consider `git rm` unless it's intentionally pinned there.
+- [x] ~~`hyprlock` background hardcoded~~ **RESOLVED 2026-08-06.** `hyprlock.conf.in` now uses a `__WALLPAPER_SET_PATH__` marker `sed`-replaced by `wallpaper-set`, works across automatic and all 3 fixed themes.
+- [x] ~~AGS post-hook CWD bug~~ **RESOLVED 2026-08-06.** Redundant/broken post_hook removed from `matugen/config.toml`; `ags-watch` already handles the AGS restart.
+- [x] ~~Orphaned `hypr/wallpapers/`~~ **RESOLVED 2026-08-06.** Deleted.
+- [ ] Theming doesn't cover everything: `wlogout/` and `swayosd/` have no matugen template, stay hardcoded.
+- [ ] `starship.toml` unused — symlinked but `.zshrc` never initializes it (p10k is the real prompt).
+- [x] ~~`foot/`/`mako/` dead config folders~~ **INVESTIGATED 2026-08-06.** Neither installed/symlinked/referenced. `foot/` kept in case it's wanted as an alt terminal later. AGS's own `Notifications.tsx`/`ControlCenter.tsx` are the real, active, matugen-themed notification system — the daemon actually competing for them was `dunst` (not mako, never in this repo), now masked (`systemctl --user mask dunst.service`). `mako/` stays in the repo unused.
+- [x] ~~Notification icons~~ **RESOLVED 2026-08-06.** `Notifications.tsx` now prefers the notification's own image over the app icon; handles icon-theme names and file paths.
+- [ ] Pre-existing bug: every notification logs `Error: out of tracking context: will not be able to cleanup` in `ags-watch.log` — `NotificationPopup` builds its widget tree outside a proper Astal component context. Not fatal; worth checking for a memory leak over long uptime.
+- [ ] `ControlCenter.tsx` has no live UI trigger — waybar's network module `on-click` (`ags request toggle-cc`) is commented out in favor of `iwgtk`; nothing else calls `toggle-cc`. Decide: restore the click, bind a keybind, or retire it.
+- [x] ~~README waybar/ControlCenter sections stale~~ **RESOLVED 2026-08-09.** Module layout and the `toggle-cc` disconnect above are now documented.
+- [x] ~~README missing `bash/`, `starship/`, `hyprconf2lua`~~ **RESOLVED 2026-08-09.** All three added to the Directory Overview / scripts table.
+- [ ] Stray binary: `scripts/.local/bin/claude` is a symlink to the Claude Code CLI itself, not a dotfile. Looks accidental — consider `git rm`.
+- [ ] `backup_hyprland/` (renamed from `hyprland_backup/` 2026-08-09) doesn't match its own README — claims to hold just the `.conf` files, but also carries a full duplicate `.lua` set and a duplicate `Wallpapers/` (~25MB, identical to `hypr/Wallpapers/`). Prune to the 9 `.conf` files unless intentional.
+- [ ] `tmux/colors.conf` isn't version-controlled — every other app's `~/.config/<app>/` is a whole-folder symlink into this repo, but `~/.config/tmux/` is a real directory with only `tmux.conf` individually symlinked. Matugen's tmux output and TPM's `plugins/` never enter the repo. Not urgent (regenerates on next `wallpaper-set`), but a fresh clone won't have tmux colors until then.
 
 ## 3. Recommended fixes (priority order)
 
-**Items 1-4 below (hyprlock path, AGS post_hook, orphaned dir, power-saver) all resolved 2026-08-06 — see §1/§2.** Remaining, in order:
-
-1. Write a real `hypr/hypridle.conf` with actual dim/lock/suspend `listener {}` blocks (§1) — the exec line alone does nothing without it.
-2. Either install `swayosd` for real or drop it from the README's Key Dependencies / startup table — right now it's documented as core infrastructure but isn't present on the system at all.
-3. Write or remove `hypr-monitor-manager` — currently a dangling reference to a tool that doesn't exist.
-4. Decide how (or whether) `ControlCenter.tsx` gets a live trigger again now that waybar's network click was repointed to `iwgtk` (§2).
+1. Write a real `hypr/hypridle.conf` with dim/lock/suspend listeners.
+2. Install `swayosd` for real, or drop it from the README.
+3. Write or remove `hypr-monitor-manager`.
+4. Decide `ControlCenter.tsx`'s trigger.
 
 ## 4. Recommended additions
 
-- [ ] Extend matugen templates to `wlogout/style.css` and/or `swayosd/style.css` for full-system theme consistency (same pattern as the existing templates — see `matugen/README.md`). `mako/`/`foot/` dropped from this — see §2, neither is actually in use.
-- [ ] Actually enable + `systemctl --user enable --now battery-alert.timer` if you want the low-battery notifications the script already implements.
-- [ ] Once you're ready to revisit starship: theme it via a new matugen template, *and* decide whether to actually switch from p10k or keep it as an opt-in alternate prompt.
-- [x] ~~Verify `catppuccin/` end-to-end~~ **RESOLVED 2026-08-06.** Ran `wallpaper-set` against a real Catppuccin wallpaper — confirmed correct border colors (Mocha's real palette, not a derived tint) and the new hyprlock path fix, zero errors.
+- [ ] Extend matugen templates to `wlogout/style.css` and `swayosd/style.css` for full theme consistency.
+- [ ] `systemctl --user enable --now battery-alert.timer` if you want the low-battery notifications.
+- [ ] Revisit starship: theme it via matugen, decide whether to replace p10k or keep it as an opt-in prompt.
+- [x] ~~Verify `catppuccin/` end-to-end~~ **RESOLVED 2026-08-06.**
