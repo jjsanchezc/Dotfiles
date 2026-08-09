@@ -43,10 +43,9 @@ Graveyard for the pre-Lua hyprlang config (renamed from `hyprland_backup/` on 20
 [AGS](https://github.com/Aylur/ags) (Astal GTK Shell) — custom GTK4 desktop widgets. `app.ts` only wires up `ControlCenter` and `Notifications`; **waybar is the active top bar**.
 
 - **widget/Bar.tsx** — Status bar/panel. *Currently unused/legacy* — not imported by `app.ts`, so it never renders.
-- **ControlCenter.tsx** — Slide-out panel: audio, network, bluetooth, battery, brightness, power profiles (asusctl), idle-timeout profiles (battery vs. charging), and media player (MPRIS). Opened with `Super + C` (`ags request toggle-cc`) — waybar's network/bluetooth icons stay on `iwgtk`/`blueman-manager` instead. See [`TODO.md`](TODO.md) for a real `app.ts` bug this trigger flushed out (the request handler never matched anything, not even before today).
+- **ControlCenter.tsx** — Slide-out panel: audio (volume/mic/brightness), bluetooth, DND, power profiles (asusctl), power actions (lock/suspend/logout/reboot/shutdown/reload AGS), and media player (MPRIS). Opened with `Super + C` (`ags request -i jjsanchezc-shell toggle-cc`) — waybar's network/bluetooth icons stay on `iwgtk`/`blueman-manager` instead. No WiFi widget on purpose — this system runs `iwd`, not NetworkManager, which is what the old widget assumed. No idle-timeout panel either — `hypr/hypridle.conf` is the single source of truth for that now. See [`TODO.md`](TODO.md) for the `app.ts` bug this trigger flushed out (the request handler never matched anything, not even before today).
 - **Notifications.tsx** — Notification popup display.
 - **style.scss / _colors.scss** — Styling. `_colors.scss` is overwritten by matugen.
-- **hypridle-profiles.json** — Idle timeout profiles (configurable from the control center).
 
 ### `waybar/`
 [Waybar](https://github.com/Alexays/Waybar) — top panel.

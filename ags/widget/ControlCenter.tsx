@@ -4,7 +4,6 @@ import { createBinding, createState, For, With } from "ags"
 import { createPoll } from "ags/time"
 import { execAsync } from "ags/process"
 import AstalWp from "gi://AstalWp"
-import AstalNetwork from "gi://AstalNetwork"
 import AstalBluetooth from "gi://AstalBluetooth"
 import AstalBattery from "gi://AstalBattery"
 import AstalMpris from "gi://AstalMpris"
@@ -15,7 +14,6 @@ import GLib from "gi://GLib"
 const wp = AstalWp.get_default()!
 const speaker = wp.audio.default_speaker!
 const mic = wp.audio.default_microphone!
-const network = AstalNetwork.get_default()
 const bt = AstalBluetooth.get_default()
 const battery = AstalBattery.get_default()
 const mpris = AstalMpris.get_default()
@@ -63,117 +61,9 @@ const [currentProfileState, setCurrentProfile] = createState(getActiveProfile())
 const currentProfile = currentProfileState
 
 // === Expandable toggle state ===
-const [wifiExpanded, setWifiExpanded] = createState(false)
 const [btExpanded, setBtExpanded] = createState(false)
 const [powerExpanded, setPowerExpanded] = createState(false)
 const [powerConfirm, setPowerConfirm] = createState("")
-
-// === Idle Timeouts ===
-const HYPRIDLE_CONF  = "/home/jjsanchezc/Dotfiles/hypr/hypridle.conf"
-const PROFILES_FILE  = "/home/jjsanchezc/.config/ags/hypridle-profiles.json"
-
-type IdleProfile = { lock: number; screenOff: number; suspend: number }
-type ProfileKey  = "battery" | "charging"
-
-const DEFAULT_PROFILES: Record<ProfileKey, IdleProfile> = {
-    battery:  { lock: 120,  screenOff: 300,  suspend: 900 },
-    charging: { lock: 600,  screenOff: 900,  suspend: 0   },
-}
-
-const parseIdleTimeouts = (): IdleProfile => {
-    try {
-        const contents = GLib.file_get_contents(HYPRIDLE_CONF)
-        if (contents[0]) {
-            const text = decoder.decode(contents[1] as any)
-            const lockMatch      = text.match(/timeout\s*=\s*(\d+)[^}]*?on-timeout\s*=\s*loginctl lock-session/s)
-            const screenOffMatch = text.match(/timeout\s*=\s*(\d+)[^}]*?on-timeout\s*=\s*hyprctl dispatch dpms off/s)
-            const suspendMatch   = text.match(/timeout\s*=\s*(\d+)[^}]*?on-timeout\s*=\s*systemctl suspend/s)
-            return {
-                lock:      lockMatch      ? Number(lockMatch[1])      : 300,
-                screenOff: screenOffMatch ? Number(screenOffMatch[1]) : 0,
-                suspend:   suspendMatch   ? Number(suspendMatch[1])   : 0,
-            }
-        }
-    } catch {}
-    return { lock: 300, screenOff: 600, suspend: 1800 }
-}
-
-const loadProfiles = (): Record<ProfileKey, IdleProfile> => {
-    try {
-        const result = GLib.file_get_contents(PROFILES_FILE)
-        if (result[0]) {
-            const parsed = JSON.parse(decoder.decode(result[1] as any))
-            return {
-                battery:  { ...DEFAULT_PROFILES.battery,  ...parsed.battery  },
-                charging: { ...DEFAULT_PROFILES.charging, ...parsed.charging },
-            }
-        }
-    } catch {}
-    // First run: seed both profiles from the current hypridle.conf
-    const current = parseIdleTimeouts()
-    return { battery: current, charging: current }
-}
-
-const saveProfiles = (bat: IdleProfile, chg: IdleProfile) => {
-    GLib.file_set_contents(PROFILES_FILE, JSON.stringify({ battery: bat, charging: chg }, null, 2))
-}
-
-const buildHypridleConf = (lock: number, screenOff: number, suspend: number): string => {
-    const lockBlock = lock > 0 ? `
-listener {
-    timeout = ${lock}
-    on-timeout = loginctl lock-session
-}` : ""
-    const screenBlock = screenOff > 0 ? `
-listener {
-    timeout = ${screenOff}
-    on-timeout = hyprctl dispatch dpms off
-    on-resume = hyprctl dispatch dpms on
-}` : ""
-    const suspendBlock = suspend > 0 ? `
-listener {
-    timeout = ${suspend}
-    on-timeout = systemctl suspend
-}` : ""
-    return `general {
-    lock_cmd = pidof hyprlock || hyprlock
-    before_sleep_cmd = loginctl lock-session
-    after_sleep_cmd = pkill waybar; sleep 1; waybar &
-}
-${lockBlock}
-${screenBlock}
-${suspendBlock}
-`
-}
-
-const isOnAC = (state: any) =>
-    state === (AstalBattery as any).State?.CHARGING ||
-    state === (AstalBattery as any).State?.FULLY_CHARGED ||
-    Number(state) === 1 || Number(state) === 4
-
-const applyIdleTimeouts = async (profile: IdleProfile) => {
-    const conf = buildHypridleConf(profile.lock, profile.screenOff, profile.suspend)
-    GLib.file_set_contents(HYPRIDLE_CONF, conf)
-    await execAsync(["bash", "-c", "killall hypridle 2>/dev/null; sleep 0.3; hypridle &"])
-}
-
-const initProfiles = loadProfiles()
-const [batteryProfile,  setBatteryProfile]  = createState<IdleProfile>(initProfiles.battery)
-const [chargingProfile, setChargingProfile] = createState<IdleProfile>(initProfiles.charging)
-const [editingProfile,  setEditingProfile]  = createState<ProfileKey>(
-    isOnAC(battery.state) ? "charging" : "battery"
-)
-const [idleExpanded, setIdleExpanded] = createState(false)
-
-// Apply correct profile on startup
-applyIdleTimeouts(isOnAC(battery.state) ? chargingProfile() : batteryProfile())
-
-// Auto-switch on plug/unplug
-battery.connect("notify::state", () => {
-    const onAC = isOnAC(battery.state)
-    applyIdleTimeouts(onAC ? chargingProfile() : batteryProfile())
-    setEditingProfile(onAC ? "charging" : "battery")
-})
 
 function resetWindowSize() {
     const win = app.get_window("control-center")
@@ -200,17 +90,8 @@ function Header() {
             </box>
             <button class="sys-button" valign={Gtk.Align.CENTER}
                 onClicked={() => {
-                    setIdleExpanded(!idleExpanded())
-                    setPowerExpanded(false)
-                    setPowerConfirm("")
-                }}>
-                <image iconName="alarm-symbolic" />
-            </button>
-            <button class="sys-button" valign={Gtk.Align.CENTER}
-                onClicked={() => {
                     setPowerExpanded(!powerExpanded())
                     setPowerConfirm("")
-                    setIdleExpanded(false)
                 }}>
                 <image iconName="system-shutdown-symbolic" />
             </button>
@@ -227,7 +108,7 @@ const powerActions = [
     { id: "logout", label: "Logout", icon: "system-log-out-symbolic", cmd: ["pkill", "Hyprland"] },
     { id: "reboot", label: "Reboot", icon: "system-reboot-symbolic", cmd: ["systemctl", "reboot"] },
     { id: "shutdown", label: "Shutdown", icon: "system-shutdown-symbolic", cmd: ["systemctl", "poweroff"] },
-    { id: "reload", label: "Reload AGS", icon: "emblem-synchronous-symbolic", cmd: ["bash", "-c", "ags quit; ags run"] },
+    { id: "reload", label: "Reload AGS", icon: "emblem-synchronous-symbolic", cmd: ["bash", "-c", "setsid bash -c 'ags quit -i jjsanchezc-shell; sleep 1; cd ~/.config/ags && exec ags run' >/dev/null 2>&1 < /dev/null &"] },
 ]
 
 function PowerPanel() {
@@ -274,181 +155,6 @@ function PowerPanel() {
                     </revealer>
                 </box>
             ))}
-        </box>
-    )
-}
-
-// ============================================================
-//  IDLE TIMEOUTS PANEL
-// ============================================================
-const LOCK_PRESETS = [
-    { label: "2m",    secs: 120  },
-    { label: "5m",    secs: 300  },
-    { label: "10m",   secs: 600  },
-    { label: "15m",   secs: 900  },
-    { label: "Never", secs: 0    },
-]
-const SCREEN_OFF_PRESETS = [
-    { label: "5m",    secs: 300  },
-    { label: "10m",   secs: 600  },
-    { label: "15m",   secs: 900  },
-    { label: "30m",   secs: 1800 },
-    { label: "Never", secs: 0    },
-]
-const SUSPEND_PRESETS = [
-    { label: "15m",   secs: 900  },
-    { label: "30m",   secs: 1800 },
-    { label: "1h",    secs: 3600 },
-    { label: "2h",    secs: 7200 },
-    { label: "Never", secs: 0    },
-]
-
-const secsLabel = (s: number) => s === 0 ? "Never" : s < 3600 ? `${s / 60}m` : `${s / 3600}h`
-
-function IdleTimeoutsPanel() {
-    const lockBtns    = new Map<number, any>()
-    const screenBtns  = new Map<number, any>()
-    const suspendBtns = new Map<number, any>()
-    const tabBtns     = new Map<ProfileKey, any>()
-
-    const refreshBtns = (map: Map<number, any>, active: number) => {
-        for (const [secs, btn] of map) {
-            if (secs === active) btn.add_css_class("active")
-            else btn.remove_css_class("active")
-        }
-    }
-
-    const activeProfile = () =>
-        editingProfile() === "battery" ? batteryProfile() : chargingProfile()
-
-    const updateField = async (field: keyof IdleProfile, value: number) => {
-        const updated = { ...activeProfile(), [field]: value }
-        if (editingProfile() === "battery") {
-            setBatteryProfile(updated)
-            saveProfiles(updated, chargingProfile())
-            if (!isOnAC(battery.state)) await applyIdleTimeouts(updated)
-        } else {
-            setChargingProfile(updated)
-            saveProfiles(batteryProfile(), updated)
-            if (isOnAC(battery.state)) await applyIdleTimeouts(updated)
-        }
-    }
-
-    const switchTab = (key: ProfileKey) => {
-        setEditingProfile(key)
-        for (const [k, btn] of tabBtns) {
-            if (k === key) btn.add_css_class("active")
-            else btn.remove_css_class("active")
-        }
-        const p = key === "battery" ? batteryProfile() : chargingProfile()
-        refreshBtns(lockBtns,    p.lock)
-        refreshBtns(screenBtns,  p.screenOff)
-        refreshBtns(suspendBtns, p.suspend)
-    }
-
-    return (
-        <box class="idle-panel" orientation={Gtk.Orientation.VERTICAL} spacing={10}>
-            {/* Tab strip */}
-            <box class="idle-tab-strip" spacing={0} homogeneous>
-                {(["battery", "charging"] as ProfileKey[]).map((key) => (
-                    <button class="idle-tab"
-                        $={(self) => {
-                            tabBtns.set(key, self)
-                            if (editingProfile() === key) self.add_css_class("active")
-                        }}
-                        onClicked={() => switchTab(key)}>
-                        <box spacing={6} halign={Gtk.Align.CENTER}>
-                            <image iconName={key === "battery" ? "battery-symbolic" : "ac-adapter-symbolic"} />
-                            <label label={key === "battery" ? "Battery" : "Charging"} />
-                            <box class="live-dot"
-                                visible={createBinding(battery, "state")((s: any) =>
-                                    (isOnAC(s) ? "charging" : "battery") === key
-                                )} />
-                        </box>
-                    </button>
-                ))}
-            </box>
-
-            {/* Lock Screen row */}
-            <box orientation={Gtk.Orientation.VERTICAL} spacing={6}>
-                <box spacing={6}>
-                    <image iconName="system-lock-screen-symbolic" />
-                    <label label="Lock Screen" hexpand xalign={0} />
-                    <label class="idle-current"
-                        label={editingProfile((k: ProfileKey) =>
-                            secsLabel(k === "battery" ? batteryProfile().lock : chargingProfile().lock)
-                        )} />
-                </box>
-                <box class="preset-row" spacing={4} homogeneous>
-                    {LOCK_PRESETS.map(p => (
-                        <button class="preset-btn"
-                            $={(self) => {
-                                lockBtns.set(p.secs, self)
-                                if (activeProfile().lock === p.secs) self.add_css_class("active")
-                            }}
-                            onClicked={() => {
-                                refreshBtns(lockBtns, p.secs)
-                                updateField("lock", p.secs)
-                            }}>
-                            <label label={p.label} />
-                        </button>
-                    ))}
-                </box>
-            </box>
-
-            {/* Screen Off row */}
-            <box orientation={Gtk.Orientation.VERTICAL} spacing={6}>
-                <box spacing={6}>
-                    <image iconName="display-brightness-symbolic" />
-                    <label label="Screen Off" hexpand xalign={0} />
-                    <label class="idle-current"
-                        label={editingProfile((k: ProfileKey) =>
-                            secsLabel(k === "battery" ? batteryProfile().screenOff : chargingProfile().screenOff)
-                        )} />
-                </box>
-                <box class="preset-row" spacing={4} homogeneous>
-                    {SCREEN_OFF_PRESETS.map(p => (
-                        <button class="preset-btn"
-                            $={(self) => {
-                                screenBtns.set(p.secs, self)
-                                if (activeProfile().screenOff === p.secs) self.add_css_class("active")
-                            }}
-                            onClicked={() => {
-                                refreshBtns(screenBtns, p.secs)
-                                updateField("screenOff", p.secs)
-                            }}>
-                            <label label={p.label} />
-                        </button>
-                    ))}
-                </box>
-            </box>
-
-            {/* Suspend row */}
-            <box orientation={Gtk.Orientation.VERTICAL} spacing={6}>
-                <box spacing={6}>
-                    <image iconName="system-suspend-symbolic" />
-                    <label label="Suspend" hexpand xalign={0} />
-                    <label class="idle-current"
-                        label={editingProfile((k: ProfileKey) =>
-                            secsLabel(k === "battery" ? batteryProfile().suspend : chargingProfile().suspend)
-                        )} />
-                </box>
-                <box class="preset-row" spacing={4} homogeneous>
-                    {SUSPEND_PRESETS.map(p => (
-                        <button class="preset-btn"
-                            $={(self) => {
-                                suspendBtns.set(p.secs, self)
-                                if (activeProfile().suspend === p.secs) self.add_css_class("active")
-                            }}
-                            onClicked={() => {
-                                refreshBtns(suspendBtns, p.secs)
-                                updateField("suspend", p.secs)
-                            }}>
-                            <label label={p.label} />
-                        </button>
-                    ))}
-                </box>
-            </box>
         </box>
     )
 }
@@ -526,47 +232,6 @@ function BrightnessSlider() {
 }
 
 // ============================================================
-//  WIFI TOGGLE (expandable)
-// ============================================================
-function WifiToggle() {
-    const wifi = network.wifi
-
-    return (
-        <box class="toggle-btn"
-            $={(self) => {
-                const update = () => {
-                    if (wifi?.enabled) self.add_css_class("active")
-                    else self.remove_css_class("active")
-                }
-                wifi?.connect("notify::enabled", update)
-                update()
-            }}>
-            <button class="toggle-main" hexpand
-                onClicked={() => {
-                    if (wifi) {
-                        wifi.enabled = !wifi.enabled
-                        if (wifi.enabled) wifi.scan()
-                    }
-                }}>
-                <box spacing={8}>
-                    <image iconName={wifi ? createBinding(wifi, "iconName") : "network-wireless-offline-symbolic"} />
-                    <label label={wifi ? createBinding(wifi, "ssid")((s) => s || "Disconnected") : "No WiFi"}
-                        hexpand xalign={0} maxWidthChars={8} ellipsize={3} />
-                </box>
-            </button>
-            <button class="toggle-arrow"
-                onClicked={() => {
-                    setWifiExpanded(!wifiExpanded())
-                    setBtExpanded(false)
-                    if (!wifiExpanded() && wifi) wifi.scan()
-                }}>
-                <image iconName={wifiExpanded((e: boolean) => e ? "pan-down-symbolic" : "pan-end-symbolic")} />
-            </button>
-        </box>
-    )
-}
-
-// ============================================================
 //  BLUETOOTH TOGGLE (expandable)
 // ============================================================
 function BluetoothToggle() {
@@ -598,135 +263,9 @@ function BluetoothToggle() {
             <button class="toggle-arrow"
                 onClicked={() => {
                     setBtExpanded(!btExpanded())
-                    setWifiExpanded(false)
                 }}>
                 <image iconName={btExpanded((e: boolean) => e ? "pan-down-symbolic" : "pan-end-symbolic")} />
             </button>
-        </box>
-    )
-}
-
-// ============================================================
-//  WIFI DETAILS (expandable panel)
-// ============================================================
-function WifiDetails() {
-    const wifi = network.wifi
-    if (!wifi) return <box />
-
-    const [showPassword, setShowPassword] = createState(false)
-    const [connectingSSID, setConnectingSSID] = createState("")
-    let pendingSSID = ""
-    let pwEntryRef: Gtk.Entry | null = null
-
-    const connectToAp = async (ssid: string, password?: string) => {
-        setConnectingSSID(ssid)
-        try {
-            if (password) {
-                await execAsync(["nmcli", "device", "wifi", "connect", ssid, "password", password])
-            } else {
-                const saved = (await execAsync(["bash", "-c", "nmcli -g NAME connection"])).trim()
-                if (saved.split("\n").includes(ssid)) {
-                    await execAsync(["nmcli", "connection", "up", "id", ssid])
-                } else {
-                    setConnectingSSID("")
-                    pendingSSID = ssid
-                    setShowPassword(true)
-                    if (pwEntryRef) pwEntryRef.set_text("")
-                    return
-                }
-            }
-            setShowPassword(false)
-            pendingSSID = ""
-            if (pwEntryRef) pwEntryRef.set_text("")
-            execAsync(["notify-send", "WiFi", `Connected to ${ssid}`])
-        } catch (e) {
-            execAsync(["notify-send", "-u", "critical", "WiFi", `Failed to connect to ${ssid}`])
-        }
-        setConnectingSSID("")
-    }
-
-    // Deduplicated APs sorted by signal, excluding active network
-    const availableAps = createBinding(wifi, "accessPoints")((aps: any[]) => {
-        const activeSsid = wifi.activeAccessPoint?.ssid
-        const seen = new Map()
-        for (const ap of aps) {
-            const ssid = ap.ssid
-            if (!ssid) continue
-            if (ssid === activeSsid) continue
-            if (!seen.has(ssid) || seen.get(ssid).strength < ap.strength) {
-                seen.set(ssid, ap)
-            }
-        }
-        return [...seen.values()].sort((a: any, b: any) => b.strength - a.strength)
-    })
-
-    return (
-        <box class="details-panel" orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-            {/* Connected network */}
-            <box class="detail-item connected" spacing={8}
-                visible={createBinding(wifi, "activeAccessPoint")((ap) => ap !== null)}>
-                <image iconName={createBinding(wifi, "iconName")} />
-                <label label={createBinding(wifi, "ssid")((s) => s || "Connected")}
-                    hexpand xalign={0} maxWidthChars={20} ellipsize={3} />
-                <label class="ap-strength"
-                    label={createBinding(wifi, "strength")((s) => `${s}%`)} />
-                <label class="detail-status" label="Connected" />
-            </box>
-
-            <box spacing={8}>
-                <label class="detail-section-label" label="AVAILABLE" hexpand xalign={0} />
-                <button class="scan-btn"
-                    onClicked={() => wifi.scan()}>
-                    <image iconName="view-refresh-symbolic" />
-                </button>
-            </box>
-
-            <For each={availableAps}>
-                {(ap) => (
-                    <button class="detail-item"
-                        onClicked={() => {
-                            if (ap.ssid) connectToAp(ap.ssid)
-                        }}>
-                        <box spacing={8}>
-                            <image iconName={createBinding(ap, "iconName")} />
-                            <label label={createBinding(ap, "ssid")((s) => s || "Hidden")}
-                                hexpand xalign={0} maxWidthChars={20} ellipsize={3} />
-                            <label class="ap-strength"
-                                label={createBinding(ap, "strength")((s) => `${s}%`)} />
-                        </box>
-                    </button>
-                )}
-            </For>
-
-            {/* Inline password entry */}
-            <box class="password-row" spacing={8}
-                visible={showPassword()}>
-                <entry
-                    hexpand
-                    $={(self) => {
-                        self.set_visibility(false)
-                        self.set_placeholder_text("Password")
-                        pwEntryRef = self
-                        const key = new Gtk.EventControllerKey()
-                        key.connect("key-pressed", (_: any, keyval: number) => {
-                            if (keyval === Gdk.KEY_Return && pendingSSID) {
-                                connectToAp(pendingSSID, self.get_text())
-                                return true
-                            }
-                            return false
-                        })
-                        self.add_controller(key)
-                    }}
-                />
-                <button class="connect-btn"
-                    onClicked={() => {
-                        if (pendingSSID && pwEntryRef) {
-                            connectToAp(pendingSSID, pwEntryRef.get_text())
-                        }
-                    }}>
-                    <label label="Connect" />
-                </button>
-            </box>
         </box>
     )
 }
@@ -1011,19 +550,6 @@ export default function ControlCenter() {
                     <PowerPanel />
                 </revealer>
 
-                {/* Idle Timeouts panel (expandable) */}
-                <revealer
-                    revealChild={idleExpanded}
-                    transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
-                    transitionDuration={200}
-                    $={(self) => {
-                        self.connect("notify::child-revealed", () => {
-                            if (!self.child_revealed) resetWindowSize()
-                        })
-                    }}>
-                    <IdleTimeoutsPanel />
-                </revealer>
-
                 {/* Audio & Display */}
                 <label class="section-label" label="Audio & Display" xalign={0} />
                 <box class="sliders" orientation={Gtk.Orientation.VERTICAL} spacing={6}>
@@ -1035,24 +561,10 @@ export default function ControlCenter() {
                 {/* Quick Settings */}
                 <label class="section-label" label="Quick Settings" xalign={0} />
                 <box orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-                    {/* Row 1: WiFi + BT (expandable) */}
+                    {/* Row 1: Bluetooth (expandable) */}
                     <box class="toggles" spacing={10} homogeneous>
-                        <WifiToggle />
                         <BluetoothToggle />
                     </box>
-
-                    {/* WiFi expandable panel */}
-                    <revealer
-                        revealChild={wifiExpanded}
-                        transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
-                        transitionDuration={200}
-                        $={(self) => {
-                            self.connect("notify::child-revealed", () => {
-                                if (!self.child_revealed) resetWindowSize()
-                            })
-                        }}>
-                        <WifiDetails />
-                    </revealer>
 
                     {/* Bluetooth expandable panel */}
                     <revealer
