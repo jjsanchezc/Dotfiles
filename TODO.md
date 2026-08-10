@@ -19,7 +19,7 @@ Pick one per item: wire it up for real, or trim the README table to match realit
 - [x] ~~`hyprlock` background hardcoded~~ **RESOLVED 2026-08-06.** `hyprlock.conf.in` now uses a `__WALLPAPER_SET_PATH__` marker `sed`-replaced by `wallpaper-set`, works across automatic and all 3 fixed themes.
 - [x] ~~AGS post-hook CWD bug~~ **RESOLVED 2026-08-06.** Redundant/broken post_hook removed from `matugen/config.toml`; `ags-watch` already handles the AGS restart.
 - [x] ~~Orphaned `hypr/wallpapers/`~~ **RESOLVED 2026-08-06.** Deleted.
-- [ ] Theming doesn't cover everything: `starship.toml` (confirmed the actual active prompt, see below) has no matugen template, stays hardcoded.
+- [x] ~~Theming doesn't cover everything: `starship.toml` has no matugen template~~ **RESOLVED 2026-08-09 — user's call, not worth it.** It's the active prompt but barely styled to begin with (only `success_symbol = '[❯](bold green)'`, a built-in color name, no hex anywhere) — theming it would mean writing most of the prompt's module config from scratch, not just swapping colors, since Starship has no external-include mechanism (the whole file would become matugen-generated, same pattern as `hyprlock.conf.in`). Decided it's not worth the effort for what it'd add. Stays hardcoded.
 - [x] ~~`starship.toml` unused, p10k is the real prompt~~ **CORRECTED then RESOLVED 2026-08-09.** This was backwards — `zsh` was never installed, so `.zshrc`/Powerlevel10k were never active; Starship is the real prompt, initialized from `bash/.bashrc`. `zsh/` (`.zshrc`, `.zshenv`, `.zprofile`, `.p10k.zsh`) has now been deleted from the repo entirely, and both READMEs updated to match.
 - [x] ~~`foot/`/`mako/` dead config folders~~ **INVESTIGATED 2026-08-06.** Neither installed/symlinked/referenced. `foot/` kept in case it's wanted as an alt terminal later. AGS's own `Notifications.tsx`/`ControlCenter.tsx` are the real, active, matugen-themed notification system — the daemon actually competing for them was `dunst` (not mako, never in this repo), now masked (`systemctl --user mask dunst.service`). `mako/` stays in the repo unused.
 - [x] ~~Notification icons~~ **RESOLVED 2026-08-06.** `Notifications.tsx` now prefers the notification's own image over the app icon; handles icon-theme names and file paths.
@@ -61,7 +61,7 @@ Pick one per item: wire it up for real, or trim the README table to match realit
 
 ## 4. Recommended additions
 
-- [ ] Extend matugen templates to `starship.toml` for full theme consistency — the one active, unthemed app left.
+- [x] ~~Extend matugen templates to `starship.toml`~~ **RESOLVED 2026-08-09 — declined, see §2.**
 - [x] ~~`wlogout/` decision~~ **RESOLVED 2026-08-09 — dropped.** Never installed, fully superseded by `power-menu` (same 5 actions, actually bound to `Super+Shift+X`). Not worth theming a dead directory. Deleted `wlogout/` entirely and every reference to it in both READMEs.
 - [x] ~~`systemctl --user enable --now battery-alert.timer`~~ **RESOLVED 2026-08-09** — see §1.
 - [x] ~~Verify `catppuccin/` end-to-end~~ **RESOLVED 2026-08-06.**
