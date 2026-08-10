@@ -6,7 +6,7 @@ import GLib from "gi://GLib"
 
 const notifd = AstalNotifd.get_default()
 const MAX_POPUPS = 3
-const DEFAULT_TIMEOUT = 4000
+const DEFAULT_TIMEOUT = 5000
 
 // Prefer the notification's own attached image (e.g. a chat avatar) over
 // the sending app's icon. `app_icon` is usually a themed icon *name*
@@ -49,8 +49,20 @@ function NotificationPopup(notification: AstalNotifd.Notification, onDone: () =>
         revealer.revealChild = false
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
             outer.unparent()
-            disposeScope?.()
-            onDone()
+            // Unparenting doesn't guarantee GTK has already recomputed the
+            // container's natural size within this same tick — relayout is
+            // queued on the frame clock, not synchronous. onDone() is what
+            // triggers resetNotifWindowSize() (the shrink-to-natural-size
+            // fix), so deferring it one more idle pass gives that recompute
+            // a chance to actually land before we ask the window to shrink
+            // — otherwise it can shrink to a still-stale (too large) size,
+            // leaving the old $border-colored sliver behind. Small popups
+            // never showed this gap; taller ones (bigger notif fonts) do.
+            GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+                disposeScope?.()
+                onDone()
+                return GLib.SOURCE_REMOVE
+            })
             return GLib.SOURCE_REMOVE
         })
     }

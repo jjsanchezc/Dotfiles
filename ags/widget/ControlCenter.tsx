@@ -545,6 +545,17 @@ export default function ControlCenter() {
                 self.connect("notify::is-active", () => {
                     if (!self.is_active) self.visible = false
                 })
+                // Same class of bug as resetNotifWindowSize() in
+                // Notifications.tsx: this layer-shell window doesn't always
+                // recompute its natural size on its own when it's shown —
+                // whatever size GTK last settled on (e.g. from before a
+                // font-size change, or a stale allocation left over from the
+                // last time it was open) can stick, clipping taller content
+                // like .section-label at the top instead of growing to fit
+                // it. Forcing a recompute on every show fixes that.
+                self.connect("notify::visible", () => {
+                    if (self.visible) resetWindowSize()
+                })
                 const key = new Gtk.EventControllerKey()
                 key.connect("key-pressed", (_: any, keyval: number) => {
                     if (keyval === Gdk.KEY_Escape) {
