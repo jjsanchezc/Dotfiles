@@ -8,8 +8,8 @@
 
 hl.config({
     general = {
-        gaps_in = 2,
-        gaps_out = 3,
+        gaps_in = 3,
+        gaps_out = 4,
         border_size = 1,
         -- Border colors come from colors.conf (matugen-generated, follows the theme)
         -- Set to true enable resizing windows by clicking and dragging on borders and gaps

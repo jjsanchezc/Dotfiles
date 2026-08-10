@@ -22,9 +22,9 @@ label {
     monitor =
     text = $TIME12
     color = $accent
-    font_size = 52
+    font_size = 65
     font_family = $font
-    position = 0, -80
+    position = 0, -100
     halign = center
     valign = top
 }
@@ -34,9 +34,9 @@ label {
     monitor =
     text = cmd[update:3600000] date +"%A, %d %B %Y"
     color = $text
-    font_size = 20
+    font_size = 25
     font_family = $font
-    position = 0, -150
+    position = 0, -188
     halign = center
     valign = top
 }
@@ -46,10 +46,10 @@ label {
 image {
     monitor =
     path = ~/.face
-    size = 100
+    size = 125
     border_color = $accent
 
-    position = 0, 75
+    position = 0, 94
     halign = center
     valign = center
 }
@@ -57,8 +57,8 @@ image {
 # INPUT FIELD
 input-field {
     monitor =
-    size = 235, 50
-    outline_thickness = 2
+    size = 294, 63
+    outline_thickness = 3
     dots_size = 0.2
     dots_spacing = 0.2
     dots_center = true
@@ -73,7 +73,7 @@ input-field {
     fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
     font_family = monospace
     capslock_color = rgb({{colors.tertiary.default.hex_stripped}})
-    position = 0, -35
+    position = 0, -44
     halign = center
     valign = center
 }

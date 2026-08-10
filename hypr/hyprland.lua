@@ -51,9 +51,9 @@ end)
 -------------------------------
 
 hl.env("HYPRCURSOR_THEME", "Adwaita")
-hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "30")
 hl.env("XCURSOR_THEME", "Adwaita")
-hl.env("XCURSOR_SIZE", "24")
+hl.env("XCURSOR_SIZE", "30")
 
 -- Nvidia stuff
 hl.env("GBM_BACKEND", "nvidia-drm")

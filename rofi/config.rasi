@@ -1,7 +1,7 @@
 * {
     font: "JetBrainsMono Nerd Font 13";
-    text-color:      #cdd6f4;
-    foreground:      #f38ba8;
+    text-color:      #ece1d4;
+    foreground:      #ffb4ab;
 }
 
 /* Configuration */
@@ -23,9 +23,9 @@ window {
     width:          445px;
     height:         560px;
     border-radius:  7px;
-    background-color: #1e1e2e;
+    background-color: #17130b;
     border:         2px solid;
-    border-color:   #6c7086;
+    border-color:   #4e4539;
     padding:        6px;
 }
 
@@ -44,18 +44,18 @@ inputbar {
     padding:  12px 10px;
     border-radius: 18px;
     border: 2px solid;
-    border-color: #6c7086;
-    background-color: #313244;
+    border-color: #4e4539;
+    background-color: #241f17;
 }
 
 prompt {
-    text-color: #cdd6f4;
+    text-color: #ece1d4;
 }
 
 entry {
     placeholder: "Type to search...";
-    placeholder-color: #a6adc8;
-    text-color: #cdd6f4;
+    placeholder-color: #d2c4b4;
+    text-color: #ece1d4;
 }
 
 /* List view */
@@ -80,22 +80,22 @@ element {
 
 element normal.normal {
     background-color: transparent;
-    text-color:       #6c7086;
+    text-color:       #4e4539;
 }
 
 element alternate.normal {
     background-color: transparent;
-    text-color:       #6c7086;
+    text-color:       #4e4539;
 }
 
 element selected.normal,
 element selected.active {
     background-color: transparent;
-    text-color:       #cdd6f4;
+    text-color:       #ece1d4;
 }
 
 /* Message area */
 message {
     border: 8px solid;
-    text-color: #f38ba8;
+    text-color: #ffb4ab;
 }
