@@ -85,7 +85,7 @@ window {
         background-color: $urgent;
         border-radius: 8px;
         padding: 3px 12px;
-        label { color: $bg; font-weight: 600; }
+        label { color: $bg; font-weight: bold; }
         &:hover { background-color: lighten($urgent, 5%); }
     }
 
@@ -153,7 +153,7 @@ window {
 .section-label {
     color: $fg-dim;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: bold;
     line-height: 1.4;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -266,7 +266,7 @@ window {
 .detail-section-label {
     color: $fg-dim;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: bold;
     padding: 4px 8px 2px;
     letter-spacing: 0.5px;
 }
@@ -363,7 +363,7 @@ tooltip {
 .notif-app {
     color: $accent;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .notif-summary {
