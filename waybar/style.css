@@ -9,42 +9,42 @@
 
 window#waybar {
     background: transparent;
-    color: #ece1d4;
+    color: #cdd6f4;
 }
 
 tooltip {
-    background: #17130b;
+    background: #1e1e2e;
     border-radius: 8px;
     border-width: 3px;
     border-style: solid;
-    border-color: #241f17;
+    border-color: #313244;
 }
 
 #workspaces button {
     padding: 6px;
-    color: #4e4539;
+    color: #6c7086;
     margin-right: 6px;
 }
 
 #workspaces button.active {
-    color: #ece1d4;
+    color: #cdd6f4;
 }
 
 #workspaces button.focused {
-    color: #432c00;
-    background: #f0bf6d;
+    color: #11111b;
+    background: #cba6f7;
     border-radius: 8px;
 }
 
 #workspaces button.urgent {
-    color: #690005;
-    background: #ffb4ab;
+    color: #11111b;
+    background: #f38ba8;
     border-radius: 8px;
 }
 
 #workspaces button:hover {
-    background: #241f17;
-    color: #ece1d4;
+    background: #313244;
+    color: #cdd6f4;
     border-radius: 4px;
 }
 
@@ -58,22 +58,22 @@ tooltip {
 #backlight,
 #cpu,
 #memory {
-    background: #241f17;
+    background: #313244;
     padding: 0px 13px;
     margin: 8px 0px 10px;
-    border: 1px solid #4e4539;
+    border: 1px solid #6c7086;
 }
 
 /* Grupo 1: CPU + Memory + Power Profile */
 #cpu {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px 0px 0px 8px;
     margin-left: 0px;
     border-right: 0px;
 }
 
 #memory {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 0px 8px 8px 0px;
     margin-left: 0px;
     border-right: 0px;
@@ -81,14 +81,14 @@ tooltip {
 
 /* Grupo 2: Network + Bluetooth */
 #network {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px 0px 0px 8px;
     margin-left: 6px;
     border-right: 0px;
 }
 
 #bluetooth {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 0px 8px 8px 0px;
     margin-right: 6px;
     border-left: 0px;
@@ -96,14 +96,14 @@ tooltip {
 
 /* Grupo 3: Audio + Micrófono */
 #pulseaudio {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px 0px 0px 8px;
     margin-left: 0px;
     border-right: 0px;
 }
 
 #pulseaudio.microphone {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 0px 8px 8px 0px;
     margin-right: 6px;
     border-left: 0px;
@@ -111,23 +111,23 @@ tooltip {
 
 /* Grupo 4: Battery */
 #battery {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px;
     margin-left: 0px;
     margin-right: 0px;
 }
 
 #battery.warning {
-    color: #b5cea4;
+    color: #f9e2af;
 }
 
 #battery.critical {
-    color: #ffb4ab;
+    color: #f38ba8;
 }
 
 /* Grupo 5: Backlight (sola) */
 #backlight {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px;
     margin-left: 6px;
     margin-right: 6px;
@@ -140,7 +140,7 @@ tooltip {
 }
 
 #workspaces {
-    background: #241f17;
+    background: #313244;
     border-radius: 8px;
     margin-left: 13px;
     padding-right: 0px;
@@ -148,7 +148,7 @@ tooltip {
 }
 
 #clock {
-    color: #f0bf6d;
+    color: #cba6f7;
     border-radius: 8px;
     margin-left: 13px;
     margin-right: 6px;
