@@ -36,8 +36,7 @@ Core Wayland compositor configuration. Migrated from hyprlang `.conf` to Hyprlan
 ### `backup_hyprland/`
 Graveyard for the pre-Lua hyprlang config (renamed from `hyprland_backup/` on 2026-08-09). Not loaded by anything — reference/rollback material only.
 
-- 9 **`.conf`** files — the original hyprlang configs.
-- Also holds a duplicate `.lua` set and a duplicate `Wallpapers/` (~25MB) not mentioned in its own README — see [`TODO.md`](TODO.md).
+- 9 **`.conf`** files — the original hyprlang configs. Matches what its own README says is here — the duplicate `.lua` set and `Wallpapers/` copy that used to also be in this folder were pruned 2026-08-09 (see [`TODO.md`](TODO.md)).
 
 ### `ags/`
 [AGS](https://github.com/Aylur/ags) (Astal GTK Shell) — custom GTK4 desktop widgets. `app.ts` only wires up `ControlCenter` and `Notifications`; **waybar is the active top bar**.
@@ -86,13 +85,6 @@ Old kitty config, kept for reference. Not documented further, not loaded by anyt
 [Mako](https://github.com/emersion/mako) — Wayland notification daemon. **Dormant**: `mako` isn't installed. AGS's own `Notifications.tsx` (see `ags/` above) is the real, active notification system.
 
 - **config** — Minimal configuration, relies mostly on defaults.
-
-### `wlogout/`
-[Wlogout](https://github.com/ArtsyMacaw/wlogout) — power menu overlay. **Dormant**: `wlogout` isn't installed and nothing references it — `scripts/.local/bin/power-menu` (rofi-based) is the real, active power menu and already covers the same 5 actions.
-
-- **layout** — Buttons: lock (hyprlock), logout, suspend, reboot, shutdown.
-- **style.css** — Custom styling.
-- **icons/** — Button icons.
 
 ### `fastfetch/`
 [Fastfetch](https://github.com/fastfetch-cli/fastfetch) — system info fetch tool.
@@ -148,7 +140,7 @@ Custom shell scripts, installed to `~/.local/bin/`.
 | `full-capture` | Screenshots the entire screen with grim, copies to clipboard, saves with timestamp |
 | `region-capture` | Interactive region screenshot using slurp + wayfreeze for freeze-before-capture |
 | `network-menu` | Rofi network management interface |
-| `ags-watch` | Watches AGS source files (`.ts`, `.tsx`, `.scss`) and restarts AGS on changes |
+| `ags-watch` | Starts AGS, re-applies the wallpaper if hyprpaper booted with none active, and watches `ags/_colors.scss` (matugen's output) to restart AGS on every `wallpaper-set`. Used to also watch every AGS source file for a full dev hot-reload — dropped 2026-08-09, too unreliable (see [`TODO.md`](TODO.md)); restart AGS by hand after editing code |
 | `pk-waybar` | Kills and restarts Waybar |
 | `libthemes` | GTK theme switcher using symlinks |
 | `hyprconf2lua` | Vendored pipx shim for the [hyprconf2lua](https://github.com/Prateek-squadron/hyprconf2lua) tool used to convert hyprlang `.conf` → Hyprland Lua (see [`lua_MIGRATION.md`](lua_MIGRATION.md)) |
@@ -211,12 +203,11 @@ Launched via the `hl.on("hyprland.start", ...)` block in `hypr/hyprland.lua`:
 | App | Role |
 |-----|------|
 | `power-saver` | Battery-aware brightness and refresh rate management |
-| `ags-watch` | AGS widget system with hot-reload |
+| `ags-watch` | AGS widget system — starts it, plus a targeted `_colors.scss` watch (see `scripts/` table) |
 | `hyprpaper` | Wallpaper daemon |
 | `hypridle` | Idle manager (dim → lock → suspend) |
 | `waybar` | Status bar |
 | `kitty` (tmux) | Terminal session on workspace 1 |
-| `kitty` (nvim) | Editor session on workspace 3 |
 
 ---
 
@@ -243,4 +234,4 @@ Installed and actually active:
 
 Referenced in the repo but **not installed** on this system right now (dormant configs — see the relevant Directory Overview entries above and [`TODO.md`](TODO.md)):
 
-- Foot (secondary terminal), lf (TUI file manager), Mako (superseded by AGS), Wlogout (superseded by `power-menu`), wl-clipboard, fzf, zoxide, eza, bat, cliphist, lazygit
+- Foot (secondary terminal), lf (TUI file manager), Mako (superseded by AGS), wl-clipboard, fzf, zoxide, eza, bat, cliphist, lazygit
