@@ -11,37 +11,38 @@ window {
 
 .control-center {
     background-color: rgba($bg, 0.95);
-    border-radius: 14px;
+    border-radius: 8px;
     border: 1px solid $border;
-    padding: 16px;
-    min-width: 460px;
+    padding: 12px;
+    min-width: 340px;
+    font-size: 13px;
 }
 
 // Header
 .header {
-    padding: 10px 6px;
-    margin-bottom: 4px;
+    padding: 8px 6px;
+    margin-bottom: 2px;
 
     image {
         color: $fg;
-        -gtk-icon-size: 22px;
+        -gtk-icon-size: 17px;
     }
 
     label {
         color: $fg;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .header-sep {
         color: $fg-dim;
-        font-size: 14px;
+        font-size: 12px;
     }
 }
 
 .sys-button {
-    min-width: 40px;
-    min-height: 40px;
-    border-radius: 10px;
+    min-width: 30px;
+    min-height: 30px;
+    border-radius: 8px;
     background-color: $bg-alt;
     margin-left: 4px;
     padding: 4px;
@@ -52,7 +53,7 @@ window {
 
     image {
         color: $fg;
-        -gtk-icon-size: 20px;
+        -gtk-icon-size: 15px;
     }
 }
 
@@ -60,30 +61,30 @@ window {
 .power-panel {
     background-color: $bg-alt;
     border-radius: $radius;
-    padding: 8px;
-    margin-bottom: 4px;
+    padding: 6px;
+    margin-bottom: 2px;
 }
 
 .power-item {
     background: transparent;
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 6px 8px;
     &:hover { background-color: $bg-hover; }
 
-    image { -gtk-icon-size: 18px; color: $fg; }
+    image { -gtk-icon-size: 15px; color: $fg; }
     label { color: $fg; }
-    .power-hint { color: $accent; font-size: 12px; }
+    .power-hint { color: $accent; font-size: 11px; }
 }
 
 .power-confirm {
-    padding: 6px 12px;
+    padding: 4px 8px;
 
-    label { color: $fg-dim; font-size: 13px; }
+    label { color: $fg-dim; font-size: 12px; }
 
     .confirm-yes {
         background-color: $urgent;
         border-radius: 8px;
-        padding: 4px 14px;
+        padding: 3px 12px;
         label { color: $bg; font-weight: 600; }
         &:hover { background-color: lighten($urgent, 5%); }
     }
@@ -91,96 +92,30 @@ window {
     .confirm-no {
         background-color: $bg-hover;
         border-radius: 8px;
-        padding: 4px 14px;
+        padding: 3px 12px;
         label { color: $fg; }
         &:hover { background-color: lighten($bg-hover, 5%); }
     }
 }
 
-// Idle Timeouts Panel
-.idle-panel {
-    background-color: $bg-alt;
-    border-radius: $radius;
-    padding: 12px;
-    margin-bottom: 4px;
-
-    image { color: $accent; -gtk-icon-size: 18px; }
-    label { color: $fg; font-size: 13px; }
-
-    .idle-current {
-        color: $accent;
-        font-size: 12px;
-        font-weight: 600;
-    }
-}
-
-.idle-tab-strip {
-    background-color: $bg;
-    border-radius: 8px;
-    padding: 3px;
-    margin-bottom: 4px;
-}
-
-.idle-tab {
-    background: transparent;
-    border-radius: 6px;
-    padding: 6px 8px;
-    transition: 150ms;
-
-    label { color: $fg-dim; font-size: 12px; font-weight: 500; }
-    image { color: $fg-dim; -gtk-icon-size: 14px; }
-
-    &:hover { background-color: $bg-hover; }
-
-    &.active {
-        background-color: $accent-bg;
-        label { color: $accent; font-weight: 700; }
-        image { color: $accent; }
-    }
-}
-
-.live-dot {
-    min-width: 7px;
-    min-height: 7px;
-    border-radius: 50%;
-    background-color: $accent;
-    margin-left: 2px;
-}
-
-.preset-btn {
-    background-color: $bg-hover;
-    border-radius: 8px;
-    padding: 6px 4px;
-    transition: 150ms;
-
-    label { color: $fg-dim; font-size: 12px; }
-
-    &:hover { background-color: lighten($bg-hover, 5%); }
-
-    &.active {
-        background-color: $accent-bg;
-        label { color: $accent; font-weight: 600; }
-    }
-}
-
 // Sliders
 .sliders {
-    padding: 4px 0;
+    padding: 2px 0;
 }
 
 .slider-row {
-    padding: 2px 0;
+    padding: 1px 0;
 
     button {
-        min-width: 40px;
-        min-height: 40px;
-        border-radius: 10px;
+        min-width: 30px;
+        min-height: 30px;
+        border-radius: 8px;
         background-color: transparent;
-        padding: 4px;
+        padding: 3px;
 
         image {
             color: $accent;
-            -gtk-icon-size: 22px;
+            -gtk-icon-size: 16px;
         }
     }
 
@@ -188,30 +123,30 @@ window {
         margin: 0 4px;
 
         trough {
-            min-height: 10px;
-            border-radius: 5px;
+            min-height: 7px;
+            border-radius: 4px;
             background-color: $bg-hover;
         }
 
         highlight {
-            border-radius: 5px;
+            border-radius: 4px;
             background-color: $accent;
         }
 
         slider {
-            min-width: 20px;
-            min-height: 20px;
+            min-width: 14px;
+            min-height: 14px;
             border-radius: 50%;
             background-color: $fg;
-            margin: -5px;
+            margin: -4px;
         }
     }
 }
 
 .slider-value {
     color: $fg-dim;
-    font-size: 13px;
-    min-width: 38px;
+    font-size: 12px;
+    min-width: 32px;
 }
 
 // Section labels
@@ -232,7 +167,7 @@ window {
 .toggle-btn {
     border-radius: $radius;
     background-color: $bg-alt;
-    padding: 12px 16px;
+    padding: 8px 10px;
     transition: 200ms;
 
     &:hover {
@@ -253,7 +188,7 @@ window {
 
     image {
         color: $fg;
-        -gtk-icon-size: 22px;
+        -gtk-icon-size: 17px;
     }
 
     label {
@@ -263,15 +198,15 @@ window {
     .toggle-main {
         background: transparent;
         border-radius: $radius 0 0 $radius;
-        padding: 12px 8px 12px 16px;
+        padding: 8px 6px 8px 10px;
     }
 
     .toggle-arrow {
         background: transparent;
         border-left: 1px solid rgba($border, 0.5);
         border-radius: 0 $radius $radius 0;
-        padding: 12px 10px;
-        image { -gtk-icon-size: 16px; color: $fg-dim; }
+        padding: 8px 7px;
+        image { -gtk-icon-size: 13px; color: $fg-dim; }
         &:hover { background-color: rgba($fg, 0.05); }
     }
 
@@ -298,19 +233,19 @@ window {
 .details-panel {
     background-color: $bg-alt;
     border-radius: $radius;
-    padding: 8px;
+    padding: 6px;
     margin-top: 2px;
 }
 
 .detail-item {
     background: transparent;
     border-radius: 8px;
-    padding: 8px 10px;
+    padding: 6px 8px;
     &:hover { background-color: $bg-hover; }
 
-    image { -gtk-icon-size: 16px; color: $fg; }
+    image { -gtk-icon-size: 14px; color: $fg; }
     label { color: $fg; }
-    .detail-status { color: $fg-dim; font-size: 12px; }
+    .detail-status { color: $fg-dim; font-size: 11px; }
 
     &.connected {
         background-color: rgba($accent, 0.15);
@@ -319,38 +254,11 @@ window {
     }
 }
 
-.ap-strength {
-    color: $fg-dim;
-    font-size: 12px;
-    min-width: 35px;
-}
-
-.password-row {
-    padding: 8px 10px;
-
-    entry {
-        background-color: $bg;
-        border: 1px solid $border;
-        border-radius: 8px;
-        padding: 6px 10px;
-        color: $fg;
-        min-height: 32px;
-    }
-
-    .connect-btn {
-        background-color: $accent;
-        border-radius: 8px;
-        padding: 6px 14px;
-        label { color: $bg; font-weight: 600; }
-        &:hover { background-color: lighten($accent, 5%); }
-    }
-}
-
 .scan-btn {
     background: transparent;
     border-radius: 8px;
-    padding: 4px 8px;
-    image { color: $fg-dim; -gtk-icon-size: 14px; }
+    padding: 4px 6px;
+    image { color: $fg-dim; -gtk-icon-size: 13px; }
     &:hover { background-color: $bg-hover; }
 }
 
@@ -358,7 +266,7 @@ window {
     color: $fg-dim;
     font-size: 10px;
     font-weight: 600;
-    padding: 6px 10px 2px;
+    padding: 4px 8px 2px;
     letter-spacing: 0.5px;
 }
 
@@ -366,8 +274,8 @@ window {
 .player {
     background-color: $bg-alt;
     border-radius: $radius;
-    padding: 14px;
-    margin-top: 4px;
+    padding: 10px;
+    margin-top: 2px;
 
     .cover {
         border-radius: 8px;
@@ -378,22 +286,22 @@ window {
     .title {
         color: $fg;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 13px;
     }
 
     .artist {
         color: $fg-dim;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .player-icon {
         color: $accent;
-        -gtk-icon-size: 16px;
+        -gtk-icon-size: 13px;
     }
 
     button {
-        min-width: 36px;
-        min-height: 36px;
+        min-width: 28px;
+        min-height: 28px;
         border-radius: 50%;
         background-color: transparent;
         padding: 0;
@@ -404,17 +312,17 @@ window {
 
         image {
             color: $fg;
-            -gtk-icon-size: 16px;
+            -gtk-icon-size: 13px;
         }
     }
 
     .play-pause {
-        min-width: 40px;
-        min-height: 40px;
+        min-width: 32px;
+        min-height: 32px;
 
         image {
             color: $accent;
-            -gtk-icon-size: 24px;
+            -gtk-icon-size: 19px;
         }
     }
 }

@@ -67,7 +67,12 @@ const [powerConfirm, setPowerConfirm] = createState("")
 
 function resetWindowSize() {
     const win = app.get_window("control-center")
-    if (win) win.set_default_size(1, 1)
+    // -1 is GTK's "compute natural size" sentinel. Forcing 1x1 (the old
+    // value) made every child lay out in a near-zero space for a frame,
+    // which corrupted Pango's cached layout on any label with `ellipsize`
+    // set (e.g. BluetoothToggle's status label got stuck showing "…"
+    // after collapsing the details panel) — this avoids that entirely.
+    if (win) win.set_default_size(-1, -1)
 }
 
 // ============================================================
@@ -90,8 +95,15 @@ function Header() {
             </box>
             <button class="sys-button" valign={Gtk.Align.CENTER}
                 onClicked={() => {
-                    setPowerExpanded(!powerExpanded())
+                    const next = !powerExpanded()
+                    setPowerExpanded(next)
                     setPowerConfirm("")
+                    // Fire the resize as the collapse *starts*, not after the
+                    // revealer's own animation finishes — otherwise the window
+                    // sits at the old size through the whole smooth slide and
+                    // only snaps at the very end, which reads as a jarring
+                    // two-step motion instead of one.
+                    if (!next) resetWindowSize()
                 }}>
                 <image iconName="system-shutdown-symbolic" />
             </button>
@@ -103,12 +115,12 @@ function Header() {
 //  POWER PANEL (expandable)
 // ============================================================
 const powerActions = [
-    { id: "lock", label: "Lock", icon: "system-lock-screen-symbolic", cmd: ["hyprlock"] },
-    { id: "suspend", label: "Suspend", icon: "media-playback-pause-symbolic", cmd: ["systemctl", "suspend"] },
-    { id: "logout", label: "Logout", icon: "system-log-out-symbolic", cmd: ["pkill", "Hyprland"] },
-    { id: "reboot", label: "Reboot", icon: "system-reboot-symbolic", cmd: ["systemctl", "reboot"] },
-    { id: "shutdown", label: "Shutdown", icon: "system-shutdown-symbolic", cmd: ["systemctl", "poweroff"] },
-    { id: "reload", label: "Reload AGS", icon: "emblem-synchronous-symbolic", cmd: ["bash", "-c", "setsid bash -c 'ags quit -i jjsanchezc-shell; sleep 1; cd ~/.config/ags && exec ags run' >/dev/null 2>&1 < /dev/null &"] },
+    { id: "lock", label: "Lock", icon: "system-lock-screen-symbolic", cmd: ["hyprlock"], confirm: false },
+    { id: "suspend", label: "Suspend", icon: "media-playback-pause-symbolic", cmd: ["systemctl", "suspend"], confirm: false },
+    { id: "logout", label: "Logout", icon: "system-log-out-symbolic", cmd: ["pkill", "Hyprland"], confirm: true },
+    { id: "reboot", label: "Reboot", icon: "system-reboot-symbolic", cmd: ["systemctl", "reboot"], confirm: true },
+    { id: "shutdown", label: "Shutdown", icon: "system-shutdown-symbolic", cmd: ["systemctl", "poweroff"], confirm: true },
+    { id: "reload", label: "Reload AGS", icon: "emblem-synchronous-symbolic", cmd: ["bash", "-c", "setsid bash -c 'ags quit -i jjsanchezc-shell; sleep 1; cd ~/.config/ags && exec ags run' >/dev/null 2>&1 < /dev/null &"], confirm: false },
 ]
 
 function PowerPanel() {
@@ -118,6 +130,11 @@ function PowerPanel() {
                 <box orientation={Gtk.Orientation.VERTICAL}>
                     <button class="power-item"
                         onClicked={() => {
+                            if (!action.confirm) {
+                                execAsync(action.cmd)
+                                setPowerExpanded(false)
+                                return
+                            }
                             if (powerConfirm() === action.id) {
                                 execAsync(action.cmd)
                                 setPowerConfirm("")
@@ -262,7 +279,9 @@ function BluetoothToggle() {
             </button>
             <button class="toggle-arrow"
                 onClicked={() => {
-                    setBtExpanded(!btExpanded())
+                    const next = !btExpanded()
+                    setBtExpanded(next)
+                    if (!next) resetWindowSize()
                 }}>
                 <image iconName={btExpanded((e: boolean) => e ? "pan-down-symbolic" : "pan-end-symbolic")} />
             </button>
@@ -343,7 +362,8 @@ function DndToggle() {
                     d ? "notifications-disabled-symbolic"
                       : "preferences-system-notifications-symbolic"
                 )} />
-                <label label={createBinding(notifd, "dontDisturb")((d) => d ? "Do Not Disturb" : "Notifications")} />
+                <label label={createBinding(notifd, "dontDisturb")((d) => d ? "DND" : "Alerts")}
+                    hexpand xalign={0} maxWidthChars={8} ellipsize={3} />
             </box>
         </button>
     )
@@ -386,12 +406,14 @@ function PowerProfileToggle() {
                     <label label={currentProfile((p: string) => {
                         const mode = profileModes.find(m => m.id === p)
                         return mode?.label || "Balanced"
-                    })} hexpand xalign={0} />
+                    })} hexpand xalign={0} maxWidthChars={8} ellipsize={3} />
                 </box>
             </button>
             <button class="toggle-arrow"
                 onClicked={() => {
-                    setProfileExpanded(!profileExpanded())
+                    const next = !profileExpanded()
+                    setProfileExpanded(next)
+                    if (!next) resetWindowSize()
                 }}>
                 <image iconName={profileExpanded((e: boolean) => e ? "pan-down-symbolic" : "pan-end-symbolic")} />
             </button>
@@ -447,8 +469,8 @@ function Player({ player }: { player: AstalMpris.Player }) {
             <box
                 class="cover"
                 css={createBinding(player, "coverArt")((path) => `
-                    min-width: 130px;
-                    min-height: 130px;
+                    min-width: 96px;
+                    min-height: 96px;
                     background-image: url('${path || ""}');
                     background-size: cover;
                     border-radius: 8px;
@@ -534,7 +556,7 @@ export default function ControlCenter() {
                 self.add_controller(key)
             }}
         >
-            <box class="control-center" orientation={Gtk.Orientation.VERTICAL} spacing={10}>
+            <box class="control-center" orientation={Gtk.Orientation.VERTICAL} spacing={8}>
                 <Header />
 
                 {/* Power panel (expandable) */}
@@ -561,9 +583,11 @@ export default function ControlCenter() {
                 {/* Quick Settings */}
                 <label class="section-label" label="Quick Settings" xalign={0} />
                 <box orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-                    {/* Row 1: Bluetooth (expandable) */}
-                    <box class="toggles" spacing={10} homogeneous>
+                    {/* Bluetooth + DND + Power Profile, one balanced row */}
+                    <box class="toggles" spacing={8} homogeneous>
                         <BluetoothToggle />
+                        <DndToggle />
+                        <PowerProfileToggle />
                     </box>
 
                     {/* Bluetooth expandable panel */}
@@ -578,12 +602,6 @@ export default function ControlCenter() {
                         }}>
                         <BluetoothDetails />
                     </revealer>
-
-                    {/* Row 2: DND + Power Profile */}
-                    <box class="toggles" spacing={10} homogeneous>
-                        <DndToggle />
-                        <PowerProfileToggle />
-                    </box>
 
                     {/* Power profile expandable panel */}
                     <revealer

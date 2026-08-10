@@ -7,5 +7,5 @@ $accent: {{colors.primary.default.hex}};
 $accent-bg: rgba({{colors.primary.default.red}}, {{colors.primary.default.green}}, {{colors.primary.default.blue}}, 0.25);
 $urgent: {{colors.error.default.hex}};
 $border: {{colors.outline_variant.default.hex}};
-$radius: 10px;
+$radius: 7px;
 $font: "JetBrainsMono Nerd Font";
