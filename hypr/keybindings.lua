@@ -116,10 +116,18 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. 9, hl.dsp.window.move({ workspac
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. 0, hl.dsp.window.move({ workspace = 10 }))
 
 -- Example special workspace (scratchpad)
+-- Moved off Super+S/Super+Shift+S 2026-08-09 to make room for screenshots
+-- (Super+M was already taken by hyprshutdown/exit, so this went to G instead).
 
-hl.bind(mainMod .. " + " .. "S", hl.dsp.workspace.toggle_special("magic"))
+hl.bind(mainMod .. " + " .. "G", hl.dsp.workspace.toggle_special("magic"))
 
-hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "S", hl.dsp.window.move({ workspace = "special:magic" }))
+hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "G", hl.dsp.window.move({ workspace = "special:magic" }))
+
+-- Screenshots
+
+hl.bind(mainMod .. " + " .. "S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/region-capture"))
+
+hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "S", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/full-capture"))
 
 -- Scroll through existing workspaces with mainMod + scroll
 

@@ -16,7 +16,7 @@ if [ "${#missing[@]}" -ne 0 ]; then
 fi
 
 # timestamp and paths
-timestamp=$(date +'%y-%m-%d_%h-%m-%s')
+timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
 screenshot_dir="$HOME/.cache/screenshots"
 mkdir -p "$screenshot_dir"
 filepath="$screenshot_dir/screenshot_$timestamp.png"
