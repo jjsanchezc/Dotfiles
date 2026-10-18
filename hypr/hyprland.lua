@@ -31,19 +31,19 @@ browser     = "zen-browser"
 -- Old hyprland.conf had 4 separate `exec-once =` lines; the new Lua config
 -- has no exec-once equivalent, so they collapse into one hl.on(...) block.
 hl.on("hyprland.start", function()
-    hl.exec_cmd("waybar")
-    hl.exec_cmd("hyprpaper")
-    hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/ags-watch")
-    hl.exec_cmd("hypridle")
-    hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/power-saver")
+  hl.exec_cmd("waybar")
+  hl.exec_cmd("hyprpaper")
+  hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/ags-watch")
+  hl.exec_cmd("hypridle")
+  hl.exec_cmd(os.getenv("HOME") .. "/Dotfiles/scripts/.local/bin/power-saver")
 
-    -- workspaces startup apps
-    -- NOTE: the "[workspace 1 silent]" dispatch-rule prefix was part of the
-    -- exec dispatcher's own string parsing in the old format, not something
-    -- hyprland.conf's config language did — kept as-is since hl.exec_cmd is
-    -- the same underlying exec dispatcher. Verify this still assigns the
-    -- window to workspace 1 silently after cutover (see checklist).
-    hl.exec_cmd("[workspace 1 silent] kitty tmux")
+  -- workspaces startup apps
+  -- NOTE: the "[workspace 1 silent]" dispatch-rule prefix was part of the
+  -- exec dispatcher's own string parsing in the old format, not something
+  -- hyprland.conf's config language did — kept as-is since hl.exec_cmd is
+  -- the same underlying exec dispatcher. Verify this still assigns the
+  -- window to workspace 1 silently after cutover (see checklist).
+  hl.exec_cmd("[workspace 1 silent] kitty tmux")
 end)
 
 -------------------------------
@@ -56,9 +56,9 @@ hl.env("XCURSOR_THEME", "Adwaita")
 hl.env("XCURSOR_SIZE", "30")
 
 -- Nvidia stuff
-hl.env("GBM_BACKEND", "nvidia-drm")
-hl.env("LIBVA_DRIVER_NAME", "nvidia")
-hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+--hl.env("GBM_BACKEND", "nvidia-drm")
+--hl.env("LIBVA_DRIVER_NAME", "nvidia")
+--hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 
 -----------------------
 ---- PERMISSIONS ----
